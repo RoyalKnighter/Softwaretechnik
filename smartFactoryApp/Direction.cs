@@ -4,5 +4,11 @@ public enum Direction
     left,
     right,
     up,
-    down
+    down,
+    upLeft,
+    upRight,
+    downLeft,
+    downRight,
+    turnLeft,
+    turnRight
 }
