@@ -1,0 +1,43 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Labor_1.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="200"
+        x:Class="Labor_1.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Height="600"
+        Width="900"
+        Margin="0"
+        BorderThickness="0"
+        Padding="0"
+        Title="Labor_1"
+        CanResize="False">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+
+    <Grid>
+        <Image Source="avares://Labor_1/Assets/factory_plan.png"
+        Stretch="None"/>
+
+        <Canvas x:Name="canvasFactory" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" >
+            <Grid Height="95" Width="160" Canvas.Left="730" Canvas.Top="500">
+                <Button x:Name="UpButton" Content="Up" HorizontalAlignment="Center" VerticalAlignment="Top" Width="40"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" />
+                <Button x:Name="DownButton" Content="Down" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="16" />
+                <Button x:Name="LeftButton" Content="Left" HorizontalAlignment="Left" VerticalAlignment="Center"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="16" />
+                <Button x:Name="RightButton" Content="Right" HorizontalAlignment="Right" VerticalAlignment="Center"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="16" />
+            </Grid>
+        </Canvas>
+    </Grid>
+
+</Window>
