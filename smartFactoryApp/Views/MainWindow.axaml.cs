@@ -12,7 +12,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        robot = new Robot(canvasFactory, new Avalonia.Point(38, 38), Robot, text);
+        robot = new Robot(canvasFactory, new Avalonia.Point(38, 38), Robot);
     }
 
     public void UpLeftClick(object sender, RoutedEventArgs args) => robot.Bewegen(Direction.upLeft);
@@ -30,6 +30,9 @@ public partial class MainWindow : Window
 
     public void LeftClick(object sender, RoutedEventArgs args) => robot.Bewegen(Direction.left);
 
+    public void ForwardClick(object sender, RoutedEventArgs args) => robot.Bewegen(Direction.forward);
+
+    public void BackwardClick(object sender, RoutedEventArgs args) => robot.Bewegen(Direction.backward);
     
 
     public void TurnLeftClick(object sender, RoutedEventArgs args) => robot.Turn(Direction.turnLeft);

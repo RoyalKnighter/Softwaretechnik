@@ -10,5 +10,7 @@ public enum Direction
     downLeft,
     downRight,
     turnLeft,
-    turnRight
+    turnRight,
+    forward,
+    backward
 }

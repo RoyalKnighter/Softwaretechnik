@@ -29,15 +29,20 @@
             <Image x:Name="Robot" Source="avares://smartFactoryApp/Assets/robot_platform.png"
                    Stretch="Fill" Width="60" Height="40" />
 
-
-            <Grid Height="50" Width="200" Canvas.Left="690" Canvas.Top="450">
+            <Grid Height="50" Width="200" Canvas.Left="690" Canvas.Top="350">
                 <RepeatButton Click="TurnLeftClick" x:Name="TurnLeftButton" Content="TurnLeft" HorizontalAlignment="Left" VerticalAlignment="Top"
                               HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
 
                 <RepeatButton Click="TurnRightClick" x:Name="TurnRightButton" Content="TurnRight" HorizontalAlignment="Right" VerticalAlignment="Top"
                               HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+            </Grid>
 
-                <TextBlock x:Name="text" Text="Test" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+            <Grid Height="50" Width="200" Canvas.Left="690" Canvas.Top="450">
+                <RepeatButton Click="ForwardClick" x:Name="ForwardButton" Content="Forward" HorizontalAlignment="Left" VerticalAlignment="Top"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+                <RepeatButton Click="BackwardClick" x:Name="BackwardButton" Content="Backward" HorizontalAlignment="Right" VerticalAlignment="Top"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
             </Grid>
 
             <Grid Height="95" Width="200" Canvas.Left="690" Canvas.Top="500">
