@@ -1,18 +1,22 @@
 using System.Drawing;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using smartFactoryApp.Models;
 
 namespace smartFactoryApp.Views;
 
 public partial class MainWindow : Window
 {
+    public static Point leftTop = new Point(38, 38);
+    public static Point rightBottom = new Point(563, 563);
+
     private Robot robot;
 
     public MainWindow()
     {
         InitializeComponent();
 
-        robot = new Robot(canvasFactory, new Avalonia.Point(38, 38), Robot);
+        robot = new Robot(new Avalonia.Point(38, 38), Robot);
     }
 
     public void UpLeftClick(object sender, RoutedEventArgs args) => robot.Bewegen(Direction.upLeft);
