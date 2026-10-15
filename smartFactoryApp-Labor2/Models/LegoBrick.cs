@@ -18,6 +18,8 @@ namespace smartFactoryApp.Models
             Color = color;
             Size = size;
             LegoPose = pose;
+            BodyWidth = 12;
+            BodyHeight = 12;
         }
     }
 }

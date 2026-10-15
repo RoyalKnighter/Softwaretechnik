@@ -3,23 +3,31 @@ public class Parameters
 {
     public enum Direction
     {
-        stop = 0,
-        up = 1,
-        down = 2,
-        left = 3,
-        right = 4
+        stop,
+        up,
+        down,
+        left,
+        right,
+        upLeft,
+        downLeft,
+        upRight,
+        downRight,
+        forward,
+        backward,
+        turnLeft,
+        turnRight
     }
     public enum LegoColor
     {
-        yellow = 0,
-        blue = 1,
-        red = 2,
-        green = 3,
+        yellow,
+        blue,
+        red,
+        green,
     }
     public enum LegoSize
     {
-        large = 0,
-        small = 1,
+        large,
+        small,
     }
     public const int bricksPerLine = 4;
     public const double rotationStep = 10;
