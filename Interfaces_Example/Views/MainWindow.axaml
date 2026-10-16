@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Interfaces_Example.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Interfaces_Example.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Interfaces_Example">
+
+    <Grid>
+        <Button x:Name="Button1" Content="Step1" HorizontalAlignment="Left" Margin="90,100,0,0" VerticalAlignment="Top" Click="Button1_Click"/>
+        <Button x:Name="Button2" Content="Step2" HorizontalAlignment="Left" Margin="90,140,0,0" VerticalAlignment="Top" Click="Button2_Click"/>
+        <Button x:Name="Button3" Content="Step3" HorizontalAlignment="Left" Margin="90,180,0,0" VerticalAlignment="Top" Click="Button3_Click"/>
+        <Button x:Name="Button4" Content="Step4" HorizontalAlignment="Left" Margin="90,220,0,0" VerticalAlignment="Top" Click="Button4_Click"/>
+        <Button x:Name="Button5" Content="Step5" HorizontalAlignment="Left" Margin="90,260,0,0" VerticalAlignment="Top" Click="Button5_Click"/>
+        <Button x:Name="Button6" Content="Reset" HorizontalAlignment="Left" Margin="90,300,0,0" VerticalAlignment="Top" Click="Button6_Click" />
+        <TextBlock x:Name="TextBox1" HorizontalAlignment="Left" Margin="200,100,0,0" Text="->" TextWrapping="Wrap" VerticalAlignment="Top" Width="500"/>
+        <TextBlock x:Name="TextBox2" HorizontalAlignment="Left" Margin="200,140,0,0" Text="->" TextWrapping="Wrap" VerticalAlignment="Top" Width="500"/>
+        <TextBlock x:Name="TextBox3" HorizontalAlignment="Left" Margin="200,180,0,0" Text="->" TextWrapping="Wrap" VerticalAlignment="Top" Width="500"/>
+        <TextBlock x:Name="TextBox4" HorizontalAlignment="Left" Margin="200,220,0,0" Text="->" TextWrapping="Wrap" VerticalAlignment="Top" Width="500"/>
+        <TextBlock x:Name="TextBox5" HorizontalAlignment="Left" Margin="200,260,0,0" Text="->" TextWrapping="Wrap" VerticalAlignment="Top" Width="500"/>
+        <Label Content="Very complex system developed by many programmers" HorizontalAlignment="Left" Margin="250,50,0,0" VerticalAlignment="Top"/>
+    </Grid>
+
+</Window>
