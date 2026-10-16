@@ -7,18 +7,17 @@ public class Robot : Beweger
     {
         Location = location;
         Borders = borders;
-        BodyWidth = 70;
-        BodyHeight = 50;
+        BodyWidth = ViewParameters.RobotWidth;
+        BodyHeight = ViewParameters.RobotHeight;
     }
     public Robot(Point location) : base(location)
     {
         Location = location;
-        BodyWidth = 70;
-        BodyHeight = 50;
+        BodyWidth = ViewParameters.RobotWidth;
+        BodyHeight = ViewParameters.RobotHeight;
     }
     public override void Bewegen(Parameters.Direction direction)
     {
         base.Bewegen(direction);
     }
 }
-

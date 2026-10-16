@@ -86,12 +86,10 @@ namespace smartFactoryApp.Models
 
             if (!Borders.IsEmpty)
             {
-                // Borders ist der Bereich für die linke obere Ecke.
-                // Spielfeldrand = Borders plus ungedrehte Größe.
                 double feldLinks  = Borders.Left;
                 double feldOben   = Borders.Top;
-                double feldRechts = Borders.Right  + BodyWidth;
-                double feldUnten  = Borders.Bottom + BodyHeight;
+                double feldRechts = Borders.Right  + ViewParameters.RobotWidth;
+                double feldUnten  = Borders.Bottom + ViewParameters.RobotHeight;
 
                 var (breite, hoehe) = GedrehteGroesse();
 
