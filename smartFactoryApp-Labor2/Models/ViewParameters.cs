@@ -22,9 +22,7 @@ namespace smartFactoryApp.Models;
         public static Pose BlueBrickPose = new Pose(490, 130, 45);
         public static Pose GreenBrickPose = new Pose(490, 460, 45);
         public static Pose YellowBrickPose = new Pose(90, 460, 45);
-        public static Rectangle Borders = new Rectangle(37, 37, 452, 480);
-        public const int RobotWidth = 70;
-        public const int RobotHeight = 50;
+        public static Rectangle Borders = new Rectangle(37, 37, 522, 530);
     }
 
 /*

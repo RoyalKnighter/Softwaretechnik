@@ -81,20 +81,38 @@ namespace smartFactoryApp.Models
 
         protected void Verschieben(double dx, double dy)
         {
+            var (breite, hoehe) = GedrehteGroesse();
+
             double mitteX = posX + BodyWidth / 2 + dx;
             double mitteY = posY + BodyHeight / 2 + dy;
+
+            double borderLeft = (mitteX - BodyWidth / 2);
+            double borderRight = (mitteX + BodyWidth / 2);
+            double borderTop = (mitteY - BodyHeight / 2);
+            double borderBottom = (mitteY + BodyHeight / 2);
 
             if (!Borders.IsEmpty)
             {
                 double feldLinks  = Borders.Left;
                 double feldOben   = Borders.Top;
-                double feldRechts = Borders.Right  + ViewParameters.RobotWidth;
-                double feldUnten  = Borders.Bottom + ViewParameters.RobotHeight;
+                double feldRechts = Borders.Right;
+                double feldUnten  = Borders.Bottom;
 
-                var (breite, hoehe) = GedrehteGroesse();
+                if (borderLeft < feldLinks)
+                {
+                    mitteX += feldLinks - borderLeft;
+                } else if (borderRight > feldRechts)
+                {
+                    mitteX -= borderRight - feldRechts;
+                }
 
-                mitteX = Math.Clamp(mitteX, feldLinks + breite / 2, feldRechts - breite / 2);
-                mitteY = Math.Clamp(mitteY, feldOben  + hoehe  / 2, feldUnten  - hoehe  / 2);
+                if (borderTop < feldOben)
+                {
+                    mitteY += feldOben - borderTop;
+                } else if (borderBottom > feldUnten)
+                {
+                    mitteY -= borderBottom - feldUnten;
+                }
             }
 
             posX = mitteX - BodyWidth / 2;
