@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:smartFactoryApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="smartFactoryApp.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="smartFactoryApp"
+        Height="600"
+        Width="900"
+        Margin="0"
+        BorderThickness="0"
+        Padding="0"
+        CanResize="False">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+        to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Grid>
+        <Image Source="avares://smartFactoryApp/Assets/factory_plan.png"
+               Stretch="None"/>
+
+        <Canvas x:Name="canvasFactory" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" >
+            <Image x:Name="Robot" Source="avares://smartFactoryApp/Assets/robot_platform.png"
+                   Stretch="Fill" Width="60" Height="40" />
+
+            <Grid Height="50" Width="200" Canvas.Left="690" Canvas.Top="350">
+                <RepeatButton Click="TurnLeftClick" x:Name="TurnLeftButton" Content="TurnLeft" HorizontalAlignment="Left" VerticalAlignment="Top"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+                <RepeatButton Click="TurnRightClick" x:Name="TurnRightButton" Content="TurnRight" HorizontalAlignment="Right" VerticalAlignment="Top"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+            </Grid>
+
+            <Grid Height="50" Width="200" Canvas.Left="690" Canvas.Top="450">
+                <RepeatButton Click="ForwardClick" x:Name="ForwardButton" Content="Forward" HorizontalAlignment="Left" VerticalAlignment="Top"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+                <RepeatButton Click="BackwardClick" x:Name="BackwardButton" Content="Backward" HorizontalAlignment="Right" VerticalAlignment="Top"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+            </Grid>
+
+            <Grid Height="95" Width="200" Canvas.Left="690" Canvas.Top="500">
+
+                <RepeatButton Click="UpLeftClick" x:Name="UpLeftButton" Content="UpLeft" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="13" />
+
+                <RepeatButton Click="UpClick" x:Name="UpButton" Content="Up" HorizontalAlignment="Center" VerticalAlignment="Top" Width="60"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="13" />
+
+                <RepeatButton Click="UpRightClick" x:Name="UpRightButton" Content="UpRight" HorizontalAlignment="Right" VerticalAlignment="Top"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+                <RepeatButton Click="RightClick" x:Name="RightButton" Content="Right" HorizontalAlignment="Right" VerticalAlignment="Center"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+                <RepeatButton Click="DownRightClick" x:Name="DownRightButton" Content="DownRight" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+                <RepeatButton Click="DownClick" x:Name="DownButton" Content="Down" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+                <RepeatButton Click="DownLeftClick" x:Name="DownLeftButton" Content="DownLeft" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+                <RepeatButton Click="LeftClick" x:Name="LeftButton" Content="Left" HorizontalAlignment="Left" VerticalAlignment="Center"
+                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="60" FontSize="13" />
+
+            </Grid>
+        </Canvas>
+    </Grid>
+
+</Window>
