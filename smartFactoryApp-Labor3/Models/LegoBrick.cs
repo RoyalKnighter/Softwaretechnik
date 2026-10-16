@@ -1,25 +1,23 @@
-using System;
-using System.Drawing;
 using static smartFactoryApp.Models.Parameters;
-using static smartFactoryApp.Models.ViewParameters;
 
 namespace smartFactoryApp.Models
 {
     public class LegoBrick : Beweger
     {
         private LegoColor color;
-        private LegoSize size; 
-        public LegoColor Color { get {return color;} set {color = value;}}
-        public LegoSize Size { get {return size;} set {size = value;}}
-        public Pose LegoPose { get; }
+        private LegoSize size;
+        public LegoColor Color { get { return color; } set { color = value; } }
+        public LegoSize Size { get { return size; } set { size = value; } }
 
-        public LegoBrick(Pose pose, LegoColor color, LegoSize size) : base(pose)
+        public LegoBrick(Pose pose, LegoColor color, LegoSize size) : base(pose, ViewParameters.BrickBorders)
         {
             Color = color;
             Size = size;
-            LegoPose = pose;
-            BodyWidth = 12;
-            BodyHeight = 12;
+        }
+
+        public override string ToString()
+        {
+            return $"{Color} {Size} LegoBrick bei ({Location.X}, {Location.Y}), {Angle}°";
         }
     }
 }

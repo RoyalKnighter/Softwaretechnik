@@ -1,4 +1,3 @@
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using smartFactoryApp.Models;
 
@@ -17,8 +16,8 @@ public partial class LegoBrickViewModel : ViewModelBase
     }
     public void Refresh()
     {
-        X = brick.Location.X;
-        Y = brick.Location.Y;
-        Angle = brick.LegoPose.Angle;
+        X = brick.X;
+        Y = brick.Y;
+        Angle = brick.Angle;
     }
 }

@@ -31,6 +31,6 @@ public class Parameters
     }
     public const int bricksPerLine = 4;
     public const double rotationStep = 10;
-    public const int timerInteval = 50; //Timer-Intervall in Millisekunden
+    public const int timerInterval = 50; // Timer-Intervall in Millisekunden
     public const int step = 3;
 }

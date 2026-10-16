@@ -5,43 +5,51 @@ namespace smartFactoryApp.Models
 {
     public class Beweger
     {
-        // Intern exakt als Kommazahl speichern, nach außen als Point
-        private double posX, posY;
+        // Position intern als Kommazahl, damit schräges Fahren nicht durch Runden verfälscht wird
+        private double x;
+        private double y;
         private double angle;
         private Rectangle borders;
 
-        public Point Location
-        {
-            get => new Point((int)Math.Round(posX), (int)Math.Round(posY));
-            set { posX = value.X; posY = value.Y; }
-        }
+        public double X { get => x; set => x = value; }
+        public double Y { get => y; set => y = value; }
         public double Angle { get => angle; set => angle = value; }
         public Rectangle Borders { get => borders; set => borders = value; }
 
-        // Ungedrehte Größe, wird von Robot bzw. LegoBrick gesetzt
-        public double BodyWidth { get; protected set; }
-        public double BodyHeight { get; protected set; }
+        // Linke obere Ecke als ganzzahliger Punkt
+        public Point Location
+        {
+            get => new Point((int)Math.Round(x), (int)Math.Round(y));
+            set { x = value.X; y = value.Y; }
+        }
 
+        public Beweger(Point location)
+        {
+            Location = location;
+        }
         public Beweger(Point location, Rectangle borders)
         {
             Location = location;
             Borders = borders;
         }
-        public Beweger(Point location)
-        {
-            Location = location;
-        }
         public Beweger(Pose pose)
         {
             Location = pose.Location;
-            angle = pose.Angle;
+            Angle = pose.Angle;
             Borders = ViewParameters.Borders;
         }
+        public Beweger(Pose pose, Rectangle borders)
+        {
+            Location = pose.Location;
+            Angle = pose.Angle;
+            Borders = borders;
+        }
 
+        // Einfache Bewegung um einen Schritt. Die linke obere Ecke muss in Borders bleiben,
+        // sonst wird der Schritt in dieser Achse nicht ausgeführt.
         public virtual void Bewegen(Parameters.Direction direction)
         {
             double s = Parameters.step;
-            double rad = Angle * Math.PI / 180;
             double dx = 0, dy = 0;
 
             switch (direction)
@@ -54,69 +62,20 @@ namespace smartFactoryApp.Models
                 case Parameters.Direction.upRight:   dx =  s; dy = -s; break;
                 case Parameters.Direction.downLeft:  dx = -s; dy =  s; break;
                 case Parameters.Direction.downRight: dx =  s; dy =  s; break;
-                case Parameters.Direction.forward:   dx =  Math.Cos(rad) * s; dy =  Math.Sin(rad) * s; break;
-                case Parameters.Direction.backward:  dx = -Math.Cos(rad) * s; dy = -Math.Sin(rad) * s; break;
-                case Parameters.Direction.turnLeft:  Drehen(-Parameters.rotationStep); return;
-                case Parameters.Direction.turnRight: Drehen( Parameters.rotationStep); return;
                 default: return;
             }
 
-            Verschieben(dx, dy);
-        }
-
-        protected void Drehen(double grad)
-        {
-            Angle = ((Angle + grad) % 360 + 360) % 360;
-            Verschieben(0, 0);   // Ecke nach Drehung wieder ins Feld schieben
-        }
-
-        private (double breite, double hoehe) GedrehteGroesse()
-        {
-            double rad = Angle * Math.PI / 180;
-            double cos = Math.Abs(Math.Cos(rad));
-            double sin = Math.Abs(Math.Sin(rad));
-            return (BodyWidth * cos + BodyHeight * sin,
-                    BodyWidth * sin + BodyHeight * cos);
-        }
-
-        protected void Verschieben(double dx, double dy)
-        {
-            var (breite, hoehe) = GedrehteGroesse();
-
-            double mitteX = posX + BodyWidth / 2 + dx;
-            double mitteY = posY + BodyHeight / 2 + dy;
-
-            double borderLeft = (mitteX - BodyWidth / 2);
-            double borderRight = (mitteX + BodyWidth / 2);
-            double borderTop = (mitteY - BodyHeight / 2);
-            double borderBottom = (mitteY + BodyHeight / 2);
-
-            if (!Borders.IsEmpty)
+            if (Borders.IsEmpty)
             {
-                double feldLinks  = Borders.Left;
-                double feldOben   = Borders.Top;
-                double feldRechts = Borders.Right;
-                double feldUnten  = Borders.Bottom;
-
-                if (borderLeft < feldLinks)
-                {
-                    mitteX += feldLinks - borderLeft;
-                } else if (borderRight > feldRechts)
-                {
-                    mitteX -= borderRight - feldRechts;
-                }
-
-                if (borderTop < feldOben)
-                {
-                    mitteY += feldOben - borderTop;
-                } else if (borderBottom > feldUnten)
-                {
-                    mitteY -= borderBottom - feldUnten;
-                }
+                X += dx;
+                Y += dy;
+                return;
             }
 
-            posX = mitteX - BodyWidth / 2;
-            posY = mitteY - BodyHeight / 2;
+            if (X + dx >= Borders.Left && X + dx <= Borders.Right)
+                X += dx;
+            if (Y + dy >= Borders.Top && Y + dy <= Borders.Bottom)
+                Y += dy;
         }
     }
 }
