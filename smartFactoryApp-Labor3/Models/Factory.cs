@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using smartFactoryApp.Models;
 using static smartFactoryApp.Models.Parameters;
 using static smartFactoryApp.Models.ViewParameters;
@@ -16,6 +17,11 @@ public class Factory
     // Roboter
     public double RobotX => robot.X;
     public double RobotY => robot.Y;
+    public Direction RobotDirection
+    {
+        get => robot.RobotDirection;
+        set => robot.RobotDirection = value;
+    }
     public double RobotAngle
     {
         get => robot.Angle;
@@ -23,7 +29,7 @@ public class Factory
     }
 
     // Produktionslinien
-    public double ProductionRedX => productionRed.Location.X;
+    /*public double ProductionRedX => productionRed.Location.X;
     public double ProductionRedY => productionRed.Location.Y;
     public double ProductionRedAngle => productionRed.Angle;
 
@@ -37,7 +43,7 @@ public class Factory
 
     public double ProductionYellowX => productionYellow.Location.X;
     public double ProductionYellowY => productionYellow.Location.Y;
-    public double ProductionYellowAngle => productionYellow.Angle;
+    public double ProductionYellowAngle => productionYellow.Angle;*/
 
     // Legosteine je Farbe
     public IReadOnlyList<LegoBrick> RedBricks => productionRed.Bricks;
@@ -66,5 +72,10 @@ public class Factory
         productionBlue.Bewegen();
         productionGreen.Bewegen();
         productionYellow.Bewegen();
+    }
+
+    public void Undock()
+    {
+        
     }
 }

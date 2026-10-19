@@ -31,4 +31,6 @@ public partial class MainWindow : Window
 
     private void StartTimer_Click(object sender, RoutedEventArgs e) => ViewModel?.StartTimer();
     private void StopTimer_Click(object sender, RoutedEventArgs e) => ViewModel?.StopTimer();
+    
+    private void Undock_Click(object sender, RoutedEventArgs e) => ViewModel?.Undock();
 }

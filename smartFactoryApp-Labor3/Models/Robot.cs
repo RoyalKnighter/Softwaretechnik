@@ -1,10 +1,19 @@
 using System;
 using System.Drawing;
+using static smartFactoryApp.Models.Parameters;
 
 namespace smartFactoryApp.Models;
 
 public class Robot : Beweger
 {
+    private Direction robotDirection = Direction.stop;
+
+    public Direction RobotDirection
+    {
+        get => robotDirection;
+        set => robotDirection = value;
+    }
+
     public Robot(Point location, Rectangle borders) : base(location, borders)
     {
     }
@@ -14,30 +23,34 @@ public class Robot : Beweger
 
     // Der Roboter kann sich zusätzlich drehen. Die Kollision mit der Wand
     // berücksichtigt dabei die gedrehte Form (Bounding Box).
-    public override void Bewegen(Parameters.Direction direction)
+    public override void Bewegen(Direction direction)
     {
         const double w = 70;   // ungedrehte Größe des Roboters, wie im XAML
         const double h = 50;
-        double s = Parameters.step;
+        double s = step;
         double rad = Angle * Math.PI / 180;
-        double dx = 0, dy = 0;
+        double lx = 0, ly = 0;
+
+        double cos = Math.Cos(rad); //Ankathete
+        double sin = Math.Sin(rad); //Gegenkathete
 
         switch (direction)
         {
-            case Parameters.Direction.up:        dy = -s;          break;
-            case Parameters.Direction.down:      dy =  s;          break;
-            case Parameters.Direction.left:      dx = -s;          break;
-            case Parameters.Direction.right:     dx =  s;          break;
-            case Parameters.Direction.upLeft:    dx = -s; dy = -s; break;
-            case Parameters.Direction.upRight:   dx =  s; dy = -s; break;
-            case Parameters.Direction.downLeft:  dx = -s; dy =  s; break;
-            case Parameters.Direction.downRight: dx =  s; dy =  s; break;
-            case Parameters.Direction.forward:   dx =  Math.Cos(rad) * s; dy =  Math.Sin(rad) * s; break;
-            case Parameters.Direction.backward:  dx = -Math.Cos(rad) * s; dy = -Math.Sin(rad) * s; break;
-            case Parameters.Direction.turnLeft:  Angle -= Parameters.rotationStep; break;
-            case Parameters.Direction.turnRight: Angle += Parameters.rotationStep; break;
-            case Parameters.Direction.stop:      break;   // nur Position prüfen
+            case Direction.up:        ly = -s;          break;
+            case Direction.down:      ly =  s;          break;
+            case Direction.left:      lx = -s;          break;
+            case Direction.right:     lx =  s;          break;
+            case Direction.upLeft:    lx = -s; ly = -s; break;
+            case Direction.upRight:   lx =  s; ly = -s; break;
+            case Direction.downLeft:  lx = -s; ly =  s; break;
+            case Direction.downRight: lx =  s; ly =  s; break;
+            case Direction.turnLeft:  Angle -= rotationStep; break;
+            case Direction.turnRight: Angle += rotationStep; break;
+            case Direction.stop:      RobotDirection = Direction.stop; break;
         }
+
+        double dx = lx * cos - ly * sin;
+        double dy = lx * sin + ly * cos;
 
         // Winkel immer zwischen 0 und 360 halten
         Angle = (Angle % 360 + 360) % 360;
@@ -50,8 +63,8 @@ public class Robot : Beweger
         {
             // Größe der gedrehten Form
             rad = Angle * Math.PI / 180;
-            double cos = Math.Abs(Math.Cos(rad));
-            double sin = Math.Abs(Math.Sin(rad));
+            cos = Math.Abs(Math.Cos(rad));
+            sin = Math.Abs(Math.Sin(rad));
             double breite = w * cos + h * sin;
             double hoehe  = w * sin + h * cos;
 

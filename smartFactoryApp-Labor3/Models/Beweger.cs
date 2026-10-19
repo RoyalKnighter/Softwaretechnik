@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using static smartFactoryApp.Models.Parameters;
 
 namespace smartFactoryApp.Models
 {
@@ -47,21 +48,21 @@ namespace smartFactoryApp.Models
 
         // Einfache Bewegung um einen Schritt. Die linke obere Ecke muss in Borders bleiben,
         // sonst wird der Schritt in dieser Achse nicht ausgeführt.
-        public virtual void Bewegen(Parameters.Direction direction)
+        public virtual void Bewegen(Direction direction)
         {
-            double s = Parameters.step;
+            double s = step;
             double dx = 0, dy = 0;
 
             switch (direction)
             {
-                case Parameters.Direction.up:        dy = -s;          break;
-                case Parameters.Direction.down:      dy =  s;          break;
-                case Parameters.Direction.left:      dx = -s;          break;
-                case Parameters.Direction.right:     dx =  s;          break;
-                case Parameters.Direction.upLeft:    dx = -s; dy = -s; break;
-                case Parameters.Direction.upRight:   dx =  s; dy = -s; break;
-                case Parameters.Direction.downLeft:  dx = -s; dy =  s; break;
-                case Parameters.Direction.downRight: dx =  s; dy =  s; break;
+                case Direction.up:        dy = -s;          break;
+                case Direction.down:      dy =  s;          break;
+                case Direction.left:      dx = -s;          break;
+                case Direction.right:     dx =  s;          break;
+                case Direction.upLeft:    dx = -s; dy = -s; break;
+                case Direction.upRight:   dx =  s; dy = -s; break;
+                case Direction.downLeft:  dx = -s; dy =  s; break;
+                case Direction.downRight: dx =  s; dy =  s; break;
                 default: return;
             }
 

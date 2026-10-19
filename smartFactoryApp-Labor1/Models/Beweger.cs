@@ -33,8 +33,8 @@ public class Beweger
         double dx = 0, dy = 0;
 
         double rad = turn.Angle * Math.PI / 180;
-        double cos = Math.Cos(rad);
-        double sin = Math.Sin(rad);
+        double cos = Math.Cos(rad); //Ankathete
+        double sin = Math.Sin(rad); //Gegenkathete
 
         switch (direction)
         {
