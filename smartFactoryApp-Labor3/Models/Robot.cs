@@ -25,7 +25,6 @@ public class Robot : Beweger
     // berücksichtigt dabei die gedrehte Form (Bounding Box).
     public override void Bewegen(Direction direction)
     {
-        double rad = Angle * Math.PI / 180;
         double lx = 0, ly = 0;
 
         switch (direction)
@@ -38,19 +37,16 @@ public class Robot : Beweger
             case Direction.upRight:   lx =  step; ly = -step;          break;
             case Direction.downLeft:  lx = -step; ly =  step;          break;
             case Direction.downRight: lx =  step; ly =  step;          break;
-            case Direction.turnLeft:  Angle -= rotationStep;           break;
-            case Direction.turnRight: Angle += rotationStep;           break;
+            case Direction.turnLeft:  Drehen(direction); break;
+            case Direction.turnRight: Drehen(direction); break;
             case Direction.stop:      RobotDirection = Direction.stop; break;
         }
 
+        double rad = Angle * Math.PI / 180;
         double cos = Math.Cos(rad); //Ankathete
         double sin = Math.Sin(rad); //Gegenkathete
-
         double dx = lx * cos - ly * sin;
         double dy = lx * sin + ly * cos;
-
-        // Winkel immer zwischen 0 und 360 halten
-        Angle = (Angle % 360 + 360) % 360;
 
         // Gewünschter neuer Mittelpunkt (um ihn wird gedreht)
         double mitteX = X + RobotWidth / 2 + dx;
@@ -59,9 +55,6 @@ public class Robot : Beweger
         if (!Borders.IsEmpty)
         {
             // Größe der gedrehten Form
-            rad = Angle * Math.PI / 180;
-            cos = Math.Abs(Math.Cos(rad));
-            sin = Math.Abs(Math.Sin(rad));
             double breite = RobotWidth * cos + RobotHeight * sin;
             double hoehe  = RobotWidth * sin + RobotHeight * cos;
 

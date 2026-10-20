@@ -57,14 +57,14 @@ namespace smartFactoryApp.Models
 
             switch (direction)
             {
-                case Direction.up:        dy = -s;          break;
-                case Direction.down:      dy =  s;          break;
-                case Direction.left:      dx = -s;          break;
-                case Direction.right:     dx =  s;          break;
-                case Direction.upLeft:    dx = -s; dy = -s; break;
-                case Direction.upRight:   dx =  s; dy = -s; break;
-                case Direction.downLeft:  dx = -s; dy =  s; break;
-                case Direction.downRight: dx =  s; dy =  s; break;
+                case Direction.up: dy = -s; break;
+                case Direction.down: dy = s; break;
+                case Direction.left: dx = -s; break;
+                case Direction.right: dx = s; break;
+                case Direction.upLeft: dx = -s; dy = -s; break;
+                case Direction.upRight: dx = s; dy = -s; break;
+                case Direction.downLeft: dx = -s; dy = s; break;
+                case Direction.downRight: dx = s; dy = s; break;
                 default: return;
             }
 
@@ -81,57 +81,75 @@ namespace smartFactoryApp.Models
                 Y += dy;
         }
 
-        private bool RechteckeUeberlappen(Point [] a, Point [] b)
+        private bool RechteckeUeberlappen(Point[] robotPoints, int[] borderProduction)
         {
-            int minAX = a[0].X;
-            int maxAX = a[0].X;
-            int minAY = a[0].Y;
-            int maxAY = a[0].Y;
-
-            int minBX = a[0].X;
-            int maxBX = a[0].X;
-            int minBY = a[0].Y;
-            int maxBY = a[0].Y;
+            int minRobotX = robotPoints[0].X;
+            int maxRobotX = robotPoints[0].X;
+            int minRobotY = robotPoints[0].Y;
+            int maxRobotY = robotPoints[0].Y;
 
             for (int i = 1; i < 4; i++)
             {
-                if (a[i].X < minAX) minAX = a[i].X;
-                if (a[i].X > maxAX) maxAX = a[i].X;
-                if (a[i].Y < minAY) minAY = a[i].Y;
-                if (a[i].X > maxAY) maxAY = a[i].Y;
-
-                if (b[i].X < minBX) minBX = b[i].X;
-                if (b[i].X > maxBX) maxBX = b[i].X;
-                if (b[i].Y < minBY) minBY = b[i].Y;
-                if (b[i].X > maxBY) maxBY = b[i].Y;
+                if (robotPoints[i].X < minRobotX) minRobotX = robotPoints[i].X;
+                if (robotPoints[i].X > maxRobotX) maxRobotX = robotPoints[i].X;
+                if (robotPoints[i].Y < minRobotY) minRobotY = robotPoints[i].Y;
+                if (robotPoints[i].X > maxRobotY) maxRobotY = robotPoints[i].Y;
             }
 
             if (
-                maxAX < minBX ||
-                maxBX < minAX ||
-                maxAY < minBY ||
-                maxBY < minAY
+                maxRobotX < borderProduction[0] ||
+                borderProduction[1] < minRobotX ||
+                maxRobotY < borderProduction[2] ||
+                borderProduction[3] < minRobotY
                 )
                 return true;
             else
                 return false;
-            
+
         }
 
         protected bool KollidiertMitProduktionslinie()
         {
-            
-
-
-
-
-
-
-
-
-
 
             return true;
+        }
+
+        protected void Drehen(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.turnLeft:  Angle -= rotationStep; break;
+                case Direction.turnRight: Angle += rotationStep; break;
+            }
+
+            // Winkel immer zwischen 0 und 360 halten
+            Angle = (Angle % 360 + 360) % 360;
+
+            // Gewünschter neuer Mittelpunkt (um ihn wird gedreht)
+            double mitteX = X + RobotWidth / 2;
+            double mitteY = Y + RobotHeight / 2;
+
+            if (!Borders.IsEmpty)
+            {
+                // Größe der gedrehten Form
+                double rad = Angle * Math.PI / 180;
+                double cos = Math.Abs(Math.Cos(rad));
+                double sin = Math.Abs(Math.Sin(rad));
+                double breite = RobotWidth * cos + RobotHeight * sin;
+                double hoehe = RobotWidth * sin + RobotHeight * cos;
+
+                // Borders gilt für die linke obere Ecke, die Wand liegt eine Robotergröße weiter
+                double wandLinks = Borders.Left;
+                double wandOben = Borders.Top;
+                double wandRechts = Borders.Right + RobotWidth;
+                double wandUnten = Borders.Bottom + RobotHeight;
+
+                mitteX = Math.Clamp(mitteX, wandLinks + breite / 2, wandRechts - breite / 2);
+                mitteY = Math.Clamp(mitteY, wandOben + hoehe / 2, wandUnten - hoehe / 2);
+            }
+
+            X = mitteX - RobotWidth / 2;
+            Y = mitteY - RobotHeight / 2;
         }
     }
 }
