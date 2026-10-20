@@ -14,9 +14,18 @@ public partial class MainViewModel : ViewModelBase
     private Factory factory;
     private DispatcherTimer timer;
 
-    int redOrder, blueOrder, greenOrder, yellowOrder;
-    int redDelivered, blueDelivered, greenDelivered, yellowDelivered;
+    public int redOrder => factory.LegoOrder[0];
+    public int blueOrder => factory.LegoOrder[1];
+    public int greenOrder => factory.LegoOrder[2];
+    public int yellowOrder => factory.LegoOrder[3];
+
+    public int redDelivered { get; set; } = 0;
+    public int blueDelivered { get; set; } = 0;
+    public int greenDelivered { get; set; } = 0;
+    public int yellowDelivered { get; set; } = 0;
+
     string orderInfo = "";
+    public int Order { get; set; }
 
     // Roboter
     public double RobotX => factory.RobotX;
@@ -76,7 +85,7 @@ public partial class MainViewModel : ViewModelBase
         factory.LegoBricksBewegen();
         NotifyLegoBricksPositionChanged();
 
-        if (!isStepMode)
+        if (!IsStepMode)
         {
             factory.RobotBewegen(factory.RobotDirection);
             NotifyRobotPositionChanged();
@@ -90,7 +99,7 @@ public partial class MainViewModel : ViewModelBase
     // Roboter bewegen
     public void MoveUp()
     {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.up);
             NotifyRobotPositionChanged();
@@ -101,7 +110,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     public void MoveDown() {
-        if (isStepMode)
+        if (IsStepMode)
             {
             factory.RobotBewegen(Direction.down);
             NotifyRobotPositionChanged();
@@ -112,7 +121,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     public void MoveLeft() {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.left);
             NotifyRobotPositionChanged();
@@ -123,7 +132,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     public void MoveRight() {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.right);
             NotifyRobotPositionChanged();
@@ -134,7 +143,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     public void MoveUpLeft() {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.upLeft);
             NotifyRobotPositionChanged();
@@ -145,7 +154,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     public void MoveUpRight() {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.upRight);
             NotifyRobotPositionChanged();
@@ -156,7 +165,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     public void MoveDownLeft() {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.downLeft);
             NotifyRobotPositionChanged();
@@ -167,7 +176,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     public void MoveDownRight() {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.downRight);
             NotifyRobotPositionChanged();
@@ -180,7 +189,7 @@ public partial class MainViewModel : ViewModelBase
 
     // Roboter drehen
     public void MoveRotateLeft() {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.turnLeft);
             NotifyRobotPositionChanged();
@@ -191,7 +200,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     public void MoveRotateRight() {
-        if (isStepMode)
+        if (IsStepMode)
         {
             factory.RobotBewegen(Direction.turnRight);
             NotifyRobotPositionChanged();

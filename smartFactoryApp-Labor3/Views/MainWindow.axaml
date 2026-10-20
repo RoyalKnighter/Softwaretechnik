@@ -25,26 +25,26 @@
 
             <Grid Height="40" Width="200" Canvas.Left="650" Canvas.Top="10">
                 <TextBox x:Name="RedTextBox" Text="Red" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="RedOrderTextBox" Text="0" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="RedDeliveredTextBox" Text="0" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="RedOrderTextBox" Text="{Binding redOrder}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="RedDeliveredTextBox" Text="{Binding redDelivered}" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
             </Grid>
 
             <Grid Height="40" Width="200" Canvas.Left="650" Canvas.Top="60">
                 <TextBox x:Name="BlueTextBox" Text="Blue" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="BlueOrderTextBox" Text="0" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="BlueDeliveredTextBox" Text="0" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="BlueOrderTextBox" Text="{Binding blueOrder }" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="BlueDeliveredTextBox" Text="{Binding blueDelivered }" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
             </Grid>
 
             <Grid Height="40" Width="200" Canvas.Left="650" Canvas.Top="110">
                 <TextBox x:Name="GreenTextBox" Text="Green" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="GreenOrderTextBox" Text="0" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="GreenDeliveredTextBox" Text="0" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="GreenOrderTextBox" Text="{Binding greenOrder }" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="GreenDeliveredTextBox" Text="{Binding greenDelivered }" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
             </Grid>
 
             <Grid Height="40" Width="200" Canvas.Left="650" Canvas.Top="160">
                 <TextBox x:Name="YellowTextBox" Text="Yellow" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="YellowOrderTextBox" Text="0" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="YellowDeliveredTextBox" Text="0" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="YellowOrderTextBox" Text="{Binding yellowOrder }" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="YellowDeliveredTextBox" Text="{Binding yellowDelivered }" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
             </Grid>
 
             <Grid Height="40" Width="120" Canvas.Left="730" Canvas.Top="250">
@@ -62,7 +62,7 @@
             </Grid>
 
             <Grid Height="40" Width="120" Canvas.Left="730" Canvas.Top="370">
-                <RepeatButton x:Name="UndockButton" Content="Undock" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="80" FontSize="16" Click="Undock_Click"/>
+                <RepeatButton x:Name="UndockButton" Content="Undock" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="80" FontSize="16" Click="UndockButton_Click"/>
             </Grid>
 
             <!-- Drehen -->

@@ -11,6 +11,8 @@ namespace smartFactoryApp.Models
         private double y;
         private double angle;
         private Rectangle borders;
+        protected const double RobotWidth = 70;   // ungedrehte Größe des Roboters, wie im XAML
+        protected const double RobotHeight = 50;
 
         public double X { get => x; set => x = value; }
         public double Y { get => y; set => y = value; }
@@ -77,6 +79,59 @@ namespace smartFactoryApp.Models
                 X += dx;
             if (Y + dy >= Borders.Top && Y + dy <= Borders.Bottom)
                 Y += dy;
+        }
+
+        private bool RechteckeUeberlappen(Point [] a, Point [] b)
+        {
+            int minAX = a[0].X;
+            int maxAX = a[0].X;
+            int minAY = a[0].Y;
+            int maxAY = a[0].Y;
+
+            int minBX = a[0].X;
+            int maxBX = a[0].X;
+            int minBY = a[0].Y;
+            int maxBY = a[0].Y;
+
+            for (int i = 1; i < 4; i++)
+            {
+                if (a[i].X < minAX) minAX = a[i].X;
+                if (a[i].X > maxAX) maxAX = a[i].X;
+                if (a[i].Y < minAY) minAY = a[i].Y;
+                if (a[i].X > maxAY) maxAY = a[i].Y;
+
+                if (b[i].X < minBX) minBX = b[i].X;
+                if (b[i].X > maxBX) maxBX = b[i].X;
+                if (b[i].Y < minBY) minBY = b[i].Y;
+                if (b[i].X > maxBY) maxBY = b[i].Y;
+            }
+
+            if (
+                maxAX < minBX ||
+                maxBX < minAX ||
+                maxAY < minBY ||
+                maxBY < minAY
+                )
+                return true;
+            else
+                return false;
+            
+        }
+
+        protected bool KollidiertMitProduktionslinie()
+        {
+            
+
+
+
+
+
+
+
+
+
+
+            return true;
         }
     }
 }

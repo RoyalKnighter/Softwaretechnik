@@ -25,29 +25,26 @@ public class Robot : Beweger
     // berücksichtigt dabei die gedrehte Form (Bounding Box).
     public override void Bewegen(Direction direction)
     {
-        const double w = 70;   // ungedrehte Größe des Roboters, wie im XAML
-        const double h = 50;
-        double s = step;
         double rad = Angle * Math.PI / 180;
         double lx = 0, ly = 0;
 
-        double cos = Math.Cos(rad); //Ankathete
-        double sin = Math.Sin(rad); //Gegenkathete
-
         switch (direction)
         {
-            case Direction.up:        ly = -s;          break;
-            case Direction.down:      ly =  s;          break;
-            case Direction.left:      lx = -s;          break;
-            case Direction.right:     lx =  s;          break;
-            case Direction.upLeft:    lx = -s; ly = -s; break;
-            case Direction.upRight:   lx =  s; ly = -s; break;
-            case Direction.downLeft:  lx = -s; ly =  s; break;
-            case Direction.downRight: lx =  s; ly =  s; break;
-            case Direction.turnLeft:  Angle -= rotationStep; break;
-            case Direction.turnRight: Angle += rotationStep; break;
+            case Direction.up:        ly = -step;                      break;
+            case Direction.down:      ly =  step;                      break;
+            case Direction.left:      lx = -step;                      break;
+            case Direction.right:     lx =  step;                      break;
+            case Direction.upLeft:    lx = -step; ly = -step;          break;
+            case Direction.upRight:   lx =  step; ly = -step;          break;
+            case Direction.downLeft:  lx = -step; ly =  step;          break;
+            case Direction.downRight: lx =  step; ly =  step;          break;
+            case Direction.turnLeft:  Angle -= rotationStep;           break;
+            case Direction.turnRight: Angle += rotationStep;           break;
             case Direction.stop:      RobotDirection = Direction.stop; break;
         }
+
+        double cos = Math.Cos(rad); //Ankathete
+        double sin = Math.Sin(rad); //Gegenkathete
 
         double dx = lx * cos - ly * sin;
         double dy = lx * sin + ly * cos;
@@ -56,8 +53,8 @@ public class Robot : Beweger
         Angle = (Angle % 360 + 360) % 360;
 
         // Gewünschter neuer Mittelpunkt (um ihn wird gedreht)
-        double mitteX = X + w / 2 + dx;
-        double mitteY = Y + h / 2 + dy;
+        double mitteX = X + RobotWidth / 2 + dx;
+        double mitteY = Y + RobotHeight / 2 + dy;
 
         if (!Borders.IsEmpty)
         {
@@ -65,20 +62,20 @@ public class Robot : Beweger
             rad = Angle * Math.PI / 180;
             cos = Math.Abs(Math.Cos(rad));
             sin = Math.Abs(Math.Sin(rad));
-            double breite = w * cos + h * sin;
-            double hoehe  = w * sin + h * cos;
+            double breite = RobotWidth * cos + RobotHeight * sin;
+            double hoehe  = RobotWidth * sin + RobotHeight * cos;
 
             // Borders gilt für die linke obere Ecke, die Wand liegt eine Robotergröße weiter
             double wandLinks  = Borders.Left;
             double wandOben   = Borders.Top;
-            double wandRechts = Borders.Right  + w;
-            double wandUnten  = Borders.Bottom + h;
+            double wandRechts = Borders.Right  + RobotWidth;
+            double wandUnten  = Borders.Bottom + RobotHeight;
 
             mitteX = Math.Clamp(mitteX, wandLinks + breite / 2, wandRechts - breite / 2);
             mitteY = Math.Clamp(mitteY, wandOben  + hoehe  / 2, wandUnten  - hoehe  / 2);
         }
 
-        X = mitteX - w / 2;
-        Y = mitteY - h / 2;
+        X = mitteX - RobotWidth / 2;
+        Y = mitteY - RobotHeight / 2;
     }
 }

@@ -28,22 +28,7 @@ public class Factory
         set => robot.Angle = value;
     }
 
-    // Produktionslinien
-    /*public double ProductionRedX => productionRed.Location.X;
-    public double ProductionRedY => productionRed.Location.Y;
-    public double ProductionRedAngle => productionRed.Angle;
-
-    public double ProductionBlueX => productionBlue.Location.X;
-    public double ProductionBlueY => productionBlue.Location.Y;
-    public double ProductionBlueAngle => productionBlue.Angle;
-
-    public double ProductionGreenX => productionGreen.Location.X;
-    public double ProductionGreenY => productionGreen.Location.Y;
-    public double ProductionGreenAngle => productionGreen.Angle;
-
-    public double ProductionYellowX => productionYellow.Location.X;
-    public double ProductionYellowY => productionYellow.Location.Y;
-    public double ProductionYellowAngle => productionYellow.Angle;*/
+    public List<int> LegoOrder = new List<int>();
 
     // Legosteine je Farbe
     public IReadOnlyList<LegoBrick> RedBricks => productionRed.Bricks;
@@ -59,6 +44,11 @@ public class Factory
         productionBlue   = new ProductionLine(RectBluePose,   LegoColor.blue);
         productionGreen  = new ProductionLine(RectGreenPose,  LegoColor.green);
         productionYellow = new ProductionLine(RectYellowPose, LegoColor.yellow);
+
+        LegoOrder.Add(0);
+        LegoOrder.Add(0);
+        LegoOrder.Add(0);
+        LegoOrder.Add(0);
     }
 
     public void RobotBewegen(Direction dir)
