@@ -131,15 +131,15 @@ namespace smartFactoryApp.Models
         private bool RechteckeUeberlappen(PointF[] a, PointF[] b)
         {
             // Erst in der Lage von b prüfen, dann in der Lage von a
-            return !LueckeInLageVon(b) && !LueckeInLageVon(a);
+            return !Ueberlappen();
 
             // Dreht beide Rechtecke so, dass "rechteck" gerade liegt (0°),
             // und prüft dann wie bei ungedrehten Rechtecken, ob es eine Lücke gibt.
-            bool LueckeInLageVon(PointF[] rechteck)
+            bool Ueberlappen()
             {
                 // Winkel des Rechtecks aus seiner ersten Kante
-                double winkel = Math.Atan2(rechteck[1].Y - rechteck[0].Y,
-                                           rechteck[1].X - rechteck[0].X);
+                double winkel = Math.Atan2(b[1].Y - b[0].Y,
+                                           b[1].X - b[0].X);
                 double cos = Math.Cos(-winkel);
                 double sin = Math.Sin(-winkel);
 
