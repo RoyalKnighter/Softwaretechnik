@@ -68,7 +68,13 @@ public class Robot : Beweger
             mitteY = Math.Clamp(mitteY, wandOben  + hoehe  / 2, wandUnten  - hoehe  / 2);
         }
 
-        X = mitteX - RobotWidth / 2;
-        Y = mitteY - RobotHeight / 2;
+        int x = (int)Math.Round(mitteX - RobotWidth / 2);
+        int y = (int)Math.Round(mitteY - RobotHeight / 2);
+        
+        if (!KollidiertMitProduktionslinie(x, y))
+        {
+            X = x;
+            Y = y;
+        }
     }
 }

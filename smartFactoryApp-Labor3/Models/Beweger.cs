@@ -7,22 +7,22 @@ namespace smartFactoryApp.Models
     public class Beweger
     {
         // Position intern als Kommazahl, damit schräges Fahren nicht durch Runden verfälscht wird
-        private double x;
-        private double y;
+        private int x;
+        private int y;
         private double angle;
         private Rectangle borders;
-        protected const double RobotWidth = 70;   // ungedrehte Größe des Roboters, wie im XAML
-        protected const double RobotHeight = 50;
+        protected const int RobotWidth = 70;   // ungedrehte Größe des Roboters, wie im XAML
+        protected const int RobotHeight = 50;
 
-        public double X { get => x; set => x = value; }
-        public double Y { get => y; set => y = value; }
+        public int X { get => x; set => x = value; }
+        public int Y { get => y; set => y = value; }
         public double Angle { get => angle; set => angle = value; }
         public Rectangle Borders { get => borders; set => borders = value; }
 
         // Linke obere Ecke als ganzzahliger Punkt
         public Point Location
         {
-            get => new Point((int)Math.Round(x), (int)Math.Round(y));
+            get => new Point(x, y);
             set { x = value.X; y = value.Y; }
         }
 
@@ -52,8 +52,8 @@ namespace smartFactoryApp.Models
         // sonst wird der Schritt in dieser Achse nicht ausgeführt.
         public virtual void Bewegen(Direction direction)
         {
-            double s = step;
-            double dx = 0, dy = 0;
+            int s = step;
+            int dx = 0, dy = 0;
 
             switch (direction)
             {
@@ -81,49 +81,17 @@ namespace smartFactoryApp.Models
                 Y += dy;
         }
 
-        private bool RechteckeUeberlappen(Point[] robotPoints, int[] borderProduction)
-        {
-            int minRobotX = robotPoints[0].X;
-            int maxRobotX = robotPoints[0].X;
-            int minRobotY = robotPoints[0].Y;
-            int maxRobotY = robotPoints[0].Y;
-
-            for (int i = 1; i < 4; i++)
-            {
-                if (robotPoints[i].X < minRobotX) minRobotX = robotPoints[i].X;
-                if (robotPoints[i].X > maxRobotX) maxRobotX = robotPoints[i].X;
-                if (robotPoints[i].Y < minRobotY) minRobotY = robotPoints[i].Y;
-                if (robotPoints[i].X > maxRobotY) maxRobotY = robotPoints[i].Y;
-            }
-
-            if (
-                maxRobotX < borderProduction[0] ||
-                borderProduction[1] < minRobotX ||
-                maxRobotY < borderProduction[2] ||
-                borderProduction[3] < minRobotY
-                )
-                return true;
-            else
-                return false;
-
-        }
-
-        protected bool KollidiertMitProduktionslinie()
-        {
-
-            return true;
-        }
-
         protected void Drehen(Direction direction)
         {
+            double angle = Angle;
             switch (direction)
             {
-                case Direction.turnLeft:  Angle -= rotationStep; break;
-                case Direction.turnRight: Angle += rotationStep; break;
+                case Direction.turnLeft: angle -= rotationStep; break;
+                case Direction.turnRight: angle += rotationStep; break;
             }
 
             // Winkel immer zwischen 0 und 360 halten
-            Angle = (Angle % 360 + 360) % 360;
+            angle = (angle % 360 + 360) % 360;
 
             // Gewünschter neuer Mittelpunkt (um ihn wird gedreht)
             double mitteX = X + RobotWidth / 2;
@@ -132,7 +100,7 @@ namespace smartFactoryApp.Models
             if (!Borders.IsEmpty)
             {
                 // Größe der gedrehten Form
-                double rad = Angle * Math.PI / 180;
+                double rad = angle * Math.PI / 180;
                 double cos = Math.Abs(Math.Cos(rad));
                 double sin = Math.Abs(Math.Sin(rad));
                 double breite = RobotWidth * cos + RobotHeight * sin;
@@ -148,8 +116,110 @@ namespace smartFactoryApp.Models
                 mitteY = Math.Clamp(mitteY, wandOben + hoehe / 2, wandUnten - hoehe / 2);
             }
 
-            X = mitteX - RobotWidth / 2;
-            Y = mitteY - RobotHeight / 2;
+            int x = (int)Math.Round(mitteX - RobotWidth / 2);
+            int y = (int)Math.Round(mitteY - RobotHeight / 2);
+
+            if (!KollidiertMitProduktionslinie(x, y))
+            {
+                Angle = angle;
+                X = x;
+                Y = y;
+            }
+        }
+
+        // Bekommt die 4 Ecken zweier Rechtecke, jeweils der Reihe nach rundherum.
+        private bool RechteckeUeberlappen(PointF[] a, PointF[] b)
+        {
+            // Erst in der Lage von b prüfen, dann in der Lage von a
+            return !LueckeInLageVon(b) && !LueckeInLageVon(a);
+
+            // Dreht beide Rechtecke so, dass "rechteck" gerade liegt (0°),
+            // und prüft dann wie bei ungedrehten Rechtecken, ob es eine Lücke gibt.
+            bool LueckeInLageVon(PointF[] rechteck)
+            {
+                // Winkel des Rechtecks aus seiner ersten Kante
+                double winkel = Math.Atan2(rechteck[1].Y - rechteck[0].Y,
+                                           rechteck[1].X - rechteck[0].X);
+                double cos = Math.Cos(-winkel);
+                double sin = Math.Sin(-winkel);
+
+                var (minAX, maxAX, minAY, maxAY) = Grenzen(a, cos, sin);
+                var (minBX, maxBX, minBY, maxBY) = Grenzen(b, cos, sin);
+
+                return maxAX < minBX || maxBX < minAX ||
+                       maxAY < minBY || maxBY < minAY;
+            }
+
+            // Dreht alle Ecken und liefert links, rechts, oben, unten
+            static (double minX, double maxX, double minY, double maxY) Grenzen(
+                PointF[] ecken, double cos, double sin)
+            {
+                double minX = double.MaxValue, maxX = double.MinValue;
+                double minY = double.MaxValue, maxY = double.MinValue;
+
+                foreach (PointF e in ecken)
+                {
+                    double x = e.X * cos - e.Y * sin;
+                    double y = e.X * sin + e.Y * cos;
+
+                    minX = Math.Min(minX, x); maxX = Math.Max(maxX, x);
+                    minY = Math.Min(minY, y); maxY = Math.Max(maxY, y);
+                }
+                return (minX, maxX, minY, maxY);
+            }
+        }
+
+        protected bool KollidiertMitProduktionslinie(int x, int y)
+        {
+            PointF[] roboter = Ecken(x + RobotWidth / 2.0, y + RobotHeight / 2.0,
+                                     RobotWidth, RobotHeight, Angle);
+
+            double w = ViewParameters.ProductionLineWidth;
+            double h = ViewParameters.ProductionLineHeight;
+
+            Pose[] linien =
+            {
+                ViewParameters.RectRedPose,   ViewParameters.RectBluePose,
+                ViewParameters.RectGreenPose, ViewParameters.RectYellowPose,
+                ViewParameters.RectRecyclePose
+            };
+
+            PointF[] ecken = Ecken(
+                ViewParameters.RectDeliveryPose.X + ViewParameters.ProductionDeliveryWidth / 2,
+                ViewParameters.RectDeliveryPose.Y + ViewParameters.ProductionDeliveryHeight / 2,
+                ViewParameters.ProductionDeliveryWidth,
+                ViewParameters.ProductionDeliveryHeight,
+                ViewParameters.RectDeliveryPose.Angle
+                );
+            if (RechteckeUeberlappen(roboter, ecken))
+                return true;
+
+            foreach (Pose linie in linien)
+            {
+                ecken = Ecken(linie.X + w / 2, linie.Y + h / 2, w, h, linie.Angle);
+                if (RechteckeUeberlappen(roboter, ecken))
+                    return true;
+            }
+
+            return false;
+
+            // Die 4 Ecken eines um seine Mitte gedrehten Rechtecks, der Reihe nach rundherum
+            static PointF[] Ecken(double mitteX, double mitteY, double w, double h, double winkel)
+            {
+                double rad = winkel * Math.PI / 180;
+                double cos = Math.Cos(rad), sin = Math.Sin(rad);
+
+                double[] lx = { -w / 2, w / 2, w / 2, -w / 2 };
+                double[] ly = { -h / 2, -h / 2, h / 2, h / 2 };
+
+                var ecken = new PointF[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    ecken[i] = new PointF((float)(mitteX + lx[i] * cos - ly[i] * sin),
+                                          (float)(mitteY + lx[i] * sin + ly[i] * cos));
+                }
+                return ecken;
+            }
         }
     }
 }
