@@ -1,0 +1,95 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:smartFactoryApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+        x:Class="smartFactoryApp.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Width="900"
+        Height="600"
+        Title="smartFactoryApp">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+<Grid>
+    <Image Source="avares://smartFactoryApp/Assets/factory_plan.png"
+           Stretch="None"/>
+
+    <Canvas x:Name="canvasFactory" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" >
+        <!-- Produktionslinie: Position und Größe aus ViewParameters (auch für die Kollision des Roboters) -->
+        <Rectangle x:Name="rectProductionLine" Height="{Binding ProductionLineHeight}" Width="{Binding ProductionLineWidth}"
+                   Canvas.Left="{Binding ProductionLineX}" Canvas.Top="{Binding ProductionLineY}" Stroke="Black">
+            <Rectangle.Fill>
+                <ImageBrush Source="avares://smartFactoryApp/Assets/production_red_2.png"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Rectangle x:Name="deliveryLine" Height="{Binding DeliveryLineHeight}" Width="{Binding DeliveryLineWidth}"
+                   Canvas.Left="{Binding DeliveryLinePositionX}" Canvas.Top="{Binding DeliveryLinePositionY}" Stroke="Black">
+            <Rectangle.Fill>
+                <ImageBrush Source="avares://smartFactoryApp/Assets/production_red_2.png"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <!-- Legosteine: 4 auf der Produktionslinie.
+             X/Y sind der Mittelpunkt des Steins, daher verschiebt Margin = -Width/2, -Height/2 das Rechteck auf die Mitte. -->
+        <Rectangle x:Name="brick0" Width="20" Height="12" Margin="-10,-6,0,0" Fill="Firebrick" Stroke="Black"
+                   Canvas.Left="{Binding Bricks[0].X}" Canvas.Top="{Binding Bricks[0].Y}"/>
+        <Rectangle x:Name="brick1" Width="20" Height="12" Margin="-10,-6,0,0" Fill="Firebrick" Stroke="Black"
+                   Canvas.Left="{Binding Bricks[1].X}" Canvas.Top="{Binding Bricks[1].Y}"/>
+        <Rectangle x:Name="brick2" Width="20" Height="12" Margin="-10,-6,0,0" Fill="Firebrick" Stroke="Black"
+                   Canvas.Left="{Binding Bricks[2].X}" Canvas.Top="{Binding Bricks[2].Y}"/>
+        <Rectangle x:Name="brick3" Width="20" Height="12" Margin="-10,-6,0,0" Fill="Firebrick" Stroke="Black"
+                   Canvas.Left="{Binding Bricks[3].X}" Canvas.Top="{Binding Bricks[3].Y}"/>
+
+        <!-- Roboter: X/Y ist die linke obere Ecke, der Greifpunkt liegt in der Mitte der Oberkante -->
+        <Rectangle x:Name="rectRobot" Width="30" Height="66" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" Stroke="Black">
+            <Rectangle.Fill>
+                <ImageBrush Source="avares://smartFactoryApp/Assets/robot_2.png"/>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <!-- Timer (Legosteine bewegen) und Undock -->
+        <StackPanel Canvas.Left="665" Canvas.Top="40" Width="160" Spacing="6">
+            <StackPanel.Styles>
+                <Style Selector="Button">
+                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            </StackPanel.Styles>
+            <Button x:Name="StartTimerButton" Content="Start" Click="StartTimer_Click"/>
+            <Button x:Name="StopTimerButton"  Content="Stop"  Click="StopTimer_Click"/>
+            <Button x:Name="UndockButton"     Content="Undock" Click="UndockButton_Click"/>
+        </StackPanel>
+
+        <!-- Roboter-Steuerung: ein Schritt pro Klick in eine der vier Richtungen -->
+        <Grid Canvas.Left="700" Canvas.Top="435"
+              ColumnDefinitions="44,44,44" RowDefinitions="38,38,38">
+            <Grid.Styles>
+                <Style Selector="Button">
+                    <Setter Property="Width" Value="40"/>
+                    <Setter Property="Height" Value="34"/>
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                </Style>
+            </Grid.Styles>
+
+            <Button x:Name="UpButton"    Grid.Row="0" Grid.Column="1" Content="↑" Click="MoveUp_Click"/>
+            <Button x:Name="LeftButton"  Grid.Row="1" Grid.Column="0" Content="←" Click="MoveLeft_Click"/>
+            <Button x:Name="RightButton" Grid.Row="1" Grid.Column="2" Content="→" Click="MoveRight_Click"/>
+            <Button x:Name="DownButton"  Grid.Row="2" Grid.Column="1" Content="↓" Click="MoveDown_Click"/>
+        </Grid>
+    </Canvas>
+</Grid>
+
+</Window>

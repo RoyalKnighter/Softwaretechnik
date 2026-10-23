@@ -1,0 +1,60 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="using:SortingApp"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="560"
+        x:Class="SortingApp.MainWindow"
+        Title="SortingApp" Width="340" Height="660" MinWidth="300" MinHeight="450">
+
+        <Grid Margin="16"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
+              ColumnDefinitions="*,*"
+              RowSpacing="8" ColumnSpacing="12">
+
+                <!-- Title -->
+                <TextBlock x:Name="label" Grid.Row="0" Grid.ColumnSpan="2"
+                           Text="TH-Koeln Olympiade"
+                           FontSize="20" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" Margin="0,0,0,8"/>
+
+                <!-- Category selection -->
+                <RadioButton x:Name="radioButton" Grid.Row="1" Grid.ColumnSpan="2"
+                             Content="Athleten" HorizontalAlignment="Center"/>
+                <RadioButton x:Name="radioButton1" Grid.Row="2" Grid.Column="0" Content="Läufern"/>
+                <RadioButton x:Name="radioButton2" Grid.Row="2" Grid.Column="1" Content="Werfen"/>
+                <RadioButton x:Name="radioButton3" Grid.Row="3" Grid.Column="0" Content="Mittelstrecke"/>
+                <RadioButton x:Name="radioButton4" Grid.Row="3" Grid.Column="1" Content="Kugelstoßen"/>
+
+                <!-- Actions -->
+                <Button x:Name="auflistenButton" Grid.Row="4" Grid.Column="0"
+                        Content="Auflisten" HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center" Click="auflistenButton_Click"/>
+                <Button x:Name="hinzufuegenButton" Grid.Row="4" Grid.Column="1"
+                        Content="Hinzufügen" HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center" Click="hinzufuegenButton_Click"/>
+                <Button x:Name="sortierenButton" Grid.Row="5" Grid.ColumnSpan="2"
+                        Content="Sortieren" HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center" Click="sortierenButton_Click"/>
+
+                <!-- Name input -->
+                <Grid Grid.Row="6" Grid.ColumnSpan="2" ColumnDefinitions="Auto,*"
+                      ColumnSpacing="8" Margin="0,8,0,0">
+                        <Label x:Name="label1" Grid.Column="0" Content="Enter Name:"
+                               VerticalAlignment="Center" Padding="0"/>
+                        <TextBox x:Name="textBox" Grid.Column="1" PlaceholderText="Name"/>
+                </Grid>
+
+                <!-- Result table: fills the remaining space -->
+                <DataGrid x:Name="dataGrid" Grid.Row="7" Grid.ColumnSpan="2"
+                          AutoGenerateColumns="True" IsReadOnly="True"
+                          GridLinesVisibility="All" BorderThickness="1"
+                          BorderBrush="Gray">
+                          <DataGrid.Columns>
+                                <DataGridTextColumn Header="Numer" Binding="{Binding Nummer}" x:DataType="local:newRow"/>
+                                <DataGridTextColumn Header="Numer" Binding="{Binding Name}" x:DataType="local:newRow"/>
+                                <DataGridTextColumn Header="Numer" Binding="{Binding Disziplin}" x:DataType="local:newRow"/>
+                          </DataGrid.Columns>
+                </DataGrid>
+        </Grid>
+</Window>
