@@ -86,35 +86,35 @@
             </Grid>
 
             <!-- Produktionslinien -->
-            <Image Source="avares://smartFactoryApp/Assets/LueftungRot.png"
+            <Image Source="avares://smartFactoryApp/Assets/LueftungRot.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionRedX}" Canvas.Top="{Binding ProductionRedY}"
                    Width="100" Height="22" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionRedAngle}"/></Image.RenderTransform>
             </Image>
-            <Image Source="avares://smartFactoryApp/Assets/LueftungBlau.png"
+            <Image Source="avares://smartFactoryApp/Assets/LueftungBlau.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionBlueX}" Canvas.Top="{Binding ProductionBlueY}"
                    Width="100" Height="22" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionBlueAngle}"/></Image.RenderTransform>
             </Image>
-            <Image Source="avares://smartFactoryApp/Assets/LueftungGruen.png"
+            <Image Source="avares://smartFactoryApp/Assets/LueftungGruen.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionGreenX}" Canvas.Top="{Binding ProductionGreenY}"
                    Width="100" Height="22" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionGreenAngle}"/></Image.RenderTransform>
             </Image>
-            <Image Source="avares://smartFactoryApp/Assets/LueftungGelb.png"
+            <Image Source="avares://smartFactoryApp/Assets/LueftungGelb.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionYellowX}" Canvas.Top="{Binding ProductionYellowY}"
                    Width="100" Height="22" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionYellowAngle}"/></Image.RenderTransform>
             </Image>
 
 
-            <Image Source="avares://smartFactoryApp/Assets/LueftungGelb.png"
+            <Image Source="avares://smartFactoryApp/Assets/Delivery.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionDeliveryX}" Canvas.Top="{Binding ProductionDeliveryY}"
                    Width="{Binding ProductionDeliveryWidth}" Height="{Binding ProductionDeliveryHeight}" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionDeliveryAngle}"/></Image.RenderTransform>
             </Image>
 
-            <Image Source="avares://smartFactoryApp/Assets/LueftungGruen.png"
+            <Image Source="avares://smartFactoryApp/Assets/LueftungBunt.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionRecycleX}" Canvas.Top="{Binding ProductionRecycleY}"
                    Width="100" Height="22" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionRecycleAngle}"/></Image.RenderTransform>

@@ -37,7 +37,7 @@ public static class ViewParameters
     public const int ProductionLineWidth = 100;
     public const int ProductionLineHeight = 22;
 
-    public const int ProductionDeliveryWidth = 400;
+    public const int ProductionDeliveryWidth = 300;
     public const int ProductionDeliveryHeight = 60;
 
     // Linke obere Ecke und Drehwinkel der vier Produktionslinien
@@ -47,11 +47,6 @@ public static class ViewParameters
     public static Pose RectYellowPose = new Pose(100,  490, 180);
 
 
-    public static Pose RectDeliveryPose = new Pose(95,  38);
+    public static Pose RectDeliveryPose = new Pose(145,  38);
     public static Pose RectRecyclePose = new Pose(245,  300);
 }
-
-/*
-dotnet build
-dotnet run
-*/
