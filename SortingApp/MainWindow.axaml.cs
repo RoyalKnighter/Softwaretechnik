@@ -24,6 +24,16 @@ public partial class MainWindow : Window
         InitializeComponent();
         dataGrid.ItemsSource = rows;
         athlet = new Athleten("Richard", "Leichtathletik");
+        laufern = new Laufern("Maja", "Laufen");
+        mittelstrecke = new Mittelstrecke("Ciara", "Mittelstrecke");
+        werfern = new Werfern("David", "Werfen");
+        kugelstoßer = new Kugelstoßern("Kaila", "kugelstoßen");
+
+        athleten.Add(athlet);
+        athleten.Add(laufern);
+        athleten.Add(mittelstrecke);
+        athleten.Add(werfern);
+        athleten.Add(kugelstoßer);
     }
 
     private void sortierenButton_Click(object sender, RoutedEventArgs e)
