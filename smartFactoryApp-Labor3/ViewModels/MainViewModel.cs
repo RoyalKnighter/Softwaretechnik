@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using smartFactoryApp.Models;
@@ -232,6 +233,8 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(RobotY));
         OnPropertyChanged(nameof(RobotAngle));
+
+        if (Beweger.dockObjekt != null) NotifyLegoBricksPositionChanged();
     }
 
     private void NotifyLegoBricksPositionChanged()

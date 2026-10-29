@@ -1,11 +1,14 @@
 using System;
 using System.Drawing;
+using System.Collections.Generic;
 using static smartFactoryApp.Models.Parameters;
+using Avalonia.Controls;
 
 namespace smartFactoryApp.Models
 {
     public class Beweger
     {
+        public static Beweger dockObjekt = null;
         // Position intern als Kommazahl, damit schräges Fahren nicht durch Runden verfälscht wird
         private int x;
         private int y;
@@ -220,6 +223,59 @@ namespace smartFactoryApp.Models
                 }
                 return ecken;
             }
+        }
+
+        public Point GreifPunkt()
+        {
+            double rad = Angle * Math.PI / 180;
+            double cos = Math.Cos(rad);
+            double sin = Math.Sin(rad);
+            
+            double mitteX = X + RobotWidth / 2;
+            double mitteY = Y + RobotHeight / 2;
+
+            return new Point((int) Math.Round(mitteX + sin * RobotHeight / 2),
+                             (int) Math.Round(mitteY - cos * RobotHeight / 2));
+        }
+
+        public void Kontakt(List<LegoBrick> bricks)
+        {
+            Point greifPunkt = GreifPunkt();
+
+            foreach (LegoBrick brick in bricks)
+            {
+                int x = brick.X;
+                int y = brick.Y;
+
+                if (
+                    greifPunkt.X > x &&
+                    greifPunkt.X < (x + 12) &&
+                    greifPunkt.Y > y &&
+                    greifPunkt.Y < (y + 12)
+                )
+                {
+                    brick.Gedockt = true;
+                    dockObjekt = brick;
+                    return;
+                }
+            }
+        }
+
+        public static void Undock()
+        {
+            if (dockObjekt == null) return;
+
+            ((LegoBrick) dockObjekt).Gedockt = false;
+            dockObjekt = null;
+        }
+
+        public static void DockobjektNachziehen(Point point, double angle)
+        {
+            if (dockObjekt == null) return;
+
+            dockObjekt.X = point.X - 6;
+            dockObjekt.Y = point.Y - 6;
+            dockObjekt.Angle = angle;
         }
     }
 }

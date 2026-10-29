@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Reflection.Metadata;
+using System.Linq;
 using smartFactoryApp.Models;
 using static smartFactoryApp.Models.Parameters;
 using static smartFactoryApp.Models.ViewParameters;
@@ -31,10 +31,10 @@ public class Factory
     public List<int> LegoOrder = new List<int>();
 
     // Legosteine je Farbe
-    public IReadOnlyList<LegoBrick> RedBricks => productionRed.Bricks;
-    public IReadOnlyList<LegoBrick> BlueBricks => productionBlue.Bricks;
-    public IReadOnlyList<LegoBrick> GreenBricks => productionGreen.Bricks;
-    public IReadOnlyList<LegoBrick> YellowBricks => productionYellow.Bricks;
+    public List<LegoBrick> RedBricks => (List<LegoBrick>) productionRed.Bricks;
+    public List<LegoBrick> BlueBricks => (List<LegoBrick>) productionBlue.Bricks;
+    public List<LegoBrick> GreenBricks => (List<LegoBrick>) productionGreen.Bricks;
+    public List<LegoBrick> YellowBricks => (List<LegoBrick>) productionYellow.Bricks;
 
     public Factory()
     {
@@ -54,6 +54,11 @@ public class Factory
     public void RobotBewegen(Direction dir)
     {
         robot.Bewegen(dir);
+        
+        if (Beweger.dockObjekt == null) robot.Kontakt(RedBricks.Concat(BlueBricks).Concat(GreenBricks).Concat(YellowBricks).ToList());
+
+        Beweger.DockobjektNachziehen(robot.GreifPunkt(), robot.Angle);
+
     }
 
     public void LegoBricksBewegen()
@@ -64,8 +69,5 @@ public class Factory
         productionYellow.Bewegen();
     }
 
-    public void Undock()
-    {
-        
-    }
+    public void Undock() => Beweger.Undock();
 }
