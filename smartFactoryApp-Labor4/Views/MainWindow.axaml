@@ -197,6 +197,14 @@
                 </Rectangle.RenderTransform>
             </Rectangle>
 
+            <Image Source="avares://smartFactoryApp/Assets/customer-arrow.png" Stretch="Fill"
+                   Canvas.Left="455" Canvas.Top="38"
+                   Width="100" Height="60" RenderTransformOrigin="50%,50%" />
+
+            <Image Source="avares://smartFactoryApp/Assets/recycle-arrow.png" Stretch="Fill"
+                   Canvas.Left="45" Canvas.Top="38"
+                   Width="100" Height="60" RenderTransformOrigin="50%,50%" />
+
             <TextBox x:Name="PositionTextBoxX" Canvas.Left="100" Canvas.Top="100" Width="20" Height="20" FontSize="20" IsReadOnly="True" Text="{Binding RobotX}"/>
             <TextBox x:Name="PositionTextBoxY" Canvas.Left="100" Canvas.Top="150" Width="20" Height="20" FontSize="20" IsReadOnly="True" Text="{Binding RobotY}"/>
             <TextBox x:Name="AngleTextBox" Canvas.Left="100" Canvas.Top="200" Width="20" Height="20" FontSize="20" IsReadOnly="True" Text="{Binding RobotAngle}"/>
