@@ -62,7 +62,7 @@
             </Grid>
 
             <Grid Height="40" Width="120" Canvas.Left="730" Canvas.Top="370">
-                <RepeatButton x:Name="UndockButton" Content="Undock" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="80" FontSize="16" Click="UndockButton_Click"/>
+                <Button x:Name="UndockButton" Content="Undock" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="80" FontSize="16" Click="UndockButton_Click"/>
             </Grid>
 
             <!-- Drehen -->
@@ -119,6 +119,16 @@
                    Width="100" Height="22" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionRecycleAngle}"/></Image.RenderTransform>
             </Image>
+
+
+            <Image Source="avares://smartFactoryApp/Assets/customer-arrow.png" Stretch="Fill"
+                   Canvas.Left="455" Canvas.Top="38"
+                   Width="100" Height="60" RenderTransformOrigin="50%,50%" />
+
+            <Image Source="avares://smartFactoryApp/Assets/recycle-arrow.png" Stretch="Fill"
+                   Canvas.Left="45" Canvas.Top="38"
+                   Width="100" Height="60" RenderTransformOrigin="50%,50%" />
+
 
             <!-- Legosteine -->
             <Rectangle Width="12" Height="12" Fill="Red" Stroke="Black"
@@ -196,14 +206,6 @@
                     <RotateTransform Angle="{Binding RobotAngle}"/>
                 </Rectangle.RenderTransform>
             </Rectangle>
-
-            <Image Source="avares://smartFactoryApp/Assets/customer-arrow.png" Stretch="Fill"
-                   Canvas.Left="455" Canvas.Top="38"
-                   Width="100" Height="60" RenderTransformOrigin="50%,50%" />
-
-            <Image Source="avares://smartFactoryApp/Assets/recycle-arrow.png" Stretch="Fill"
-                   Canvas.Left="45" Canvas.Top="38"
-                   Width="100" Height="60" RenderTransformOrigin="50%,50%" />
 
             <TextBox x:Name="PositionTextBoxX" Canvas.Left="100" Canvas.Top="100" Width="20" Height="20" FontSize="20" IsReadOnly="True" Text="{Binding RobotX}"/>
             <TextBox x:Name="PositionTextBoxY" Canvas.Left="100" Canvas.Top="150" Width="20" Height="20" FontSize="20" IsReadOnly="True" Text="{Binding RobotY}"/>

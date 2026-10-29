@@ -244,6 +244,9 @@ namespace smartFactoryApp.Models
 
             foreach (LegoBrick brick in bricks)
             {
+                // Steine auf der Delivery-Linie dürfen nicht wieder gegriffen werden
+                if (brick.Ausgeliefert) continue;
+
                 int x = brick.X;
                 int y = brick.Y;
 
@@ -261,12 +264,31 @@ namespace smartFactoryApp.Models
             }
         }
 
-        public static void Undock()
+        // Lässt den Stein los, aber nur über der Delivery-Linie.
+        // Gibt zurück, ob losgelassen wurde.
+        public static bool Undock()
         {
-            if (dockObjekt == null) return;
+            if (dockObjekt is not LegoBrick brick) return false;
 
-            ((LegoBrick) dockObjekt).Gedockt = false;
+            // Delivery-Linie mit 10 Pixel Toleranz, weil der Roboter wegen der
+            // Kollision nicht ganz an die Linie heranfahren kann
+            Rectangle delivery = new Rectangle(
+                ViewParameters.RectDeliveryPose.X, ViewParameters.RectDeliveryPose.Y,
+                ViewParameters.ProductionDeliveryWidth, ViewParameters.ProductionDeliveryHeight);
+            delivery.Inflate(10, 10);
+
+            // Mittelpunkt des 12x12-Steins muss über der Linie liegen
+            if (!delivery.Contains(brick.X + 6, brick.Y + 6)) return false;
+
+            brick.Gedockt = false;
+            brick.Ausgeliefert = true;
+
+            // Stein gerade und mittig auf die Delivery-Linie legen
+            brick.Y = ViewParameters.RectDeliveryPose.Y + ViewParameters.ProductionDeliveryHeight / 2 - 6;
+            brick.Angle = ViewParameters.RectDeliveryPose.Angle;
+
             dockObjekt = null;
+            return true;
         }
 
         public static void DockobjektNachziehen(Point point, double angle)

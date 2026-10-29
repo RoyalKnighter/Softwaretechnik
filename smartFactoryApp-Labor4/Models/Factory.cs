@@ -69,5 +69,13 @@ public class Factory
         productionYellow.Bewegen();
     }
 
-    public void Undock() => Beweger.Undock();
+    public void Undock()
+    {
+        if (Beweger.Undock())
+        {
+            // Den Roboter nach dem Undocken etwas zurückfahren, weg vom abgelegten Stein
+            for (int i = 0; i < 4; i++)
+                robot.Bewegen(Direction.down);
+        }
+    }
 }

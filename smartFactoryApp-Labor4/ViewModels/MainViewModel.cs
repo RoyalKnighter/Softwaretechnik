@@ -212,7 +212,12 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    public void Undock() => factory.Undock();
+    public void Undock()
+    {
+        factory.Undock();
+        NotifyRobotPositionChanged();
+        NotifyLegoBricksPositionChanged();   // abgelegten Stein auf der Linie anzeigen
+    }
 
     public void ResetRotation()
     {
