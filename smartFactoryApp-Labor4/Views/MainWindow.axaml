@@ -130,6 +130,28 @@
                    Width="100" Height="60" RenderTransformOrigin="50%,50%" />
 
 
+            <!-- Steine auf der Recycle-Linie (max. 4) -->
+            <Rectangle Width="12" Height="12" Stroke="Black"
+                       Fill="{Binding RecycleBricks[0].Farbe}" IsVisible="{Binding RecycleBricks[0].Sichtbar}"
+                       Canvas.Left="{Binding RecycleBricks[0].X}" Canvas.Top="{Binding RecycleBricks[0].Y}">
+                <Rectangle.RenderTransform><RotateTransform Angle="{Binding RecycleBricks[0].Angle}"/></Rectangle.RenderTransform>
+            </Rectangle>
+            <Rectangle Width="12" Height="12" Stroke="Black"
+                       Fill="{Binding RecycleBricks[1].Farbe}" IsVisible="{Binding RecycleBricks[1].Sichtbar}"
+                       Canvas.Left="{Binding RecycleBricks[1].X}" Canvas.Top="{Binding RecycleBricks[1].Y}">
+                <Rectangle.RenderTransform><RotateTransform Angle="{Binding RecycleBricks[1].Angle}"/></Rectangle.RenderTransform>
+            </Rectangle>
+            <Rectangle Width="12" Height="12" Stroke="Black"
+                       Fill="{Binding RecycleBricks[2].Farbe}" IsVisible="{Binding RecycleBricks[2].Sichtbar}"
+                       Canvas.Left="{Binding RecycleBricks[2].X}" Canvas.Top="{Binding RecycleBricks[2].Y}">
+                <Rectangle.RenderTransform><RotateTransform Angle="{Binding RecycleBricks[2].Angle}"/></Rectangle.RenderTransform>
+            </Rectangle>
+            <Rectangle Width="12" Height="12" Stroke="Black"
+                       Fill="{Binding RecycleBricks[3].Farbe}" IsVisible="{Binding RecycleBricks[3].Sichtbar}"
+                       Canvas.Left="{Binding RecycleBricks[3].X}" Canvas.Top="{Binding RecycleBricks[3].Y}">
+                <Rectangle.RenderTransform><RotateTransform Angle="{Binding RecycleBricks[3].Angle}"/></Rectangle.RenderTransform>
+            </Rectangle>
+
             <!-- Legosteine -->
             <Rectangle Width="12" Height="12" Fill="Red" Stroke="Black"
                        Canvas.Left="{Binding RedBricks[0].X}" Canvas.Top="{Binding RedBricks[0].Y}">

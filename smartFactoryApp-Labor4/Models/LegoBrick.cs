@@ -13,6 +13,17 @@ namespace smartFactoryApp.Models
 
         public bool Gedockt { get { return gedockt; } set { gedockt = value; } }
         public bool Ausgeliefert { get => ausgeliefert; set => ausgeliefert = value; }
+
+        // Fährt der ausgelieferte Stein nach rechts zum Kunden (true) oder nach links zum Recycling (false)?
+        public bool ZumKunden { get; set; } = true;
+
+        // Der ausgelieferte Stein ist am Ende der Delivery-Linie angekommen.
+        // Die Factory holt ihn dann ab und legt einen neuen Stein auf die Produktionslinie.
+        public bool AmZiel { get; set; } = false;
+
+        // Wo ein neuer Stein auf der Produktionslinie hingelegt werden muss
+        public Point Heimat => heimat;
+        public double HeimatWinkel => heimatWinkel;
         public LegoColor Color { get; set; }
         public LegoSize Size { get; set; }
 
@@ -38,8 +49,9 @@ namespace smartFactoryApp.Models
             heimat = Location;
             Location = aktuell;
 
-            // Ein gedockter Stein wird nur noch vom Roboter bewegt
-            if (Gedockt) return;
+            // Ein gedockter Stein wird nur noch vom Roboter bewegt,
+            // ein angekommener Stein wartet darauf, von der Factory abgeholt zu werden
+            if (Gedockt || AmZiel) return;
 
             if (!Ausgeliefert)
             {
@@ -48,19 +60,20 @@ namespace smartFactoryApp.Models
                 return;
             }
 
-            // Ausgelieferter Stein: auf der Delivery-Linie nach rechts fahren,
-            // bis er hinter ihrem Ende ist, dann zurück auf seine Produktionslinie
-            int deliveryRechts = ViewParameters.RectDeliveryPose.X + ViewParameters.ProductionDeliveryWidth;
+            // Ausgelieferter Stein: auf der Delivery-Linie nach rechts zum Kunden
+            // oder nach links zum Recycling fahren, bis er hinter dem Ende der Linie ist
+            int deliveryLinks  = ViewParameters.RectDeliveryPose.X;
+            int deliveryRechts = deliveryLinks + ViewParameters.ProductionDeliveryWidth;
 
-            if (X <= deliveryRechts)
+            if (ZumKunden)
             {
-                base.Bewegen(Direction.right);
+                if (X <= deliveryRechts) base.Bewegen(Direction.right);
+                else AmZiel = true;
             }
             else
             {
-                Ausgeliefert = false;
-                Location = heimat;
-                Angle = heimatWinkel;
+                if (X + 12 >= deliveryLinks) base.Bewegen(Direction.left);
+                else AmZiel = true;
             }
         }
     }

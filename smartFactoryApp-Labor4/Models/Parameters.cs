@@ -30,6 +30,7 @@ public class Parameters
         small,
     }
     public const int bricksPerLine = 4;
+    public const int maxRecycleBricks = 4;   // so viele Steine passen auf die Recycle-Linie
     public const double rotationStep = 10;
     public const int timerInterval = 50; // Timer-Intervall in Millisekunden
     public const int step = 3;

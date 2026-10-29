@@ -66,6 +66,9 @@ public partial class MainViewModel : ViewModelBase
     public List<LegoBrickViewModel> GreenBricks { get; }
     public List<LegoBrickViewModel> YellowBricks { get; }
 
+    // Feste Plätze auf der Recycle-Linie; ein leerer Platz ist unsichtbar
+    public List<LegoBrickViewModel> RecycleBricks { get; } = new List<LegoBrickViewModel>();
+
     public MainViewModel()
     {
         factory = new Factory();
@@ -74,6 +77,9 @@ public partial class MainViewModel : ViewModelBase
         BlueBricks = factory.BlueBricks.Select(b => new LegoBrickViewModel(b)).ToList();
         GreenBricks = factory.GreenBricks.Select(b => new LegoBrickViewModel(b)).ToList();
         YellowBricks = factory.YellowBricks.Select(b => new LegoBrickViewModel(b)).ToList();
+
+        for (int i = 0; i < maxRecycleBricks; i++)
+            RecycleBricks.Add(new LegoBrickViewModel(null));
 
         timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
@@ -244,9 +250,22 @@ public partial class MainViewModel : ViewModelBase
 
     private void NotifyLegoBricksPositionChanged()
     {
-        foreach (var brick in RedBricks.Concat(BlueBricks).Concat(GreenBricks).Concat(YellowBricks))
+        // Die Produktionslinien können einen Stein durch einen neuen ersetzt haben,
+        // deshalb vor dem Aktualisieren den aktuellen Stein aus der Factory übernehmen
+        Abgleichen(RedBricks,    factory.RedBricks);
+        Abgleichen(BlueBricks,   factory.BlueBricks);
+        Abgleichen(GreenBricks,  factory.GreenBricks);
+        Abgleichen(YellowBricks, factory.YellowBricks);
+        Abgleichen(RecycleBricks, factory.RecycleBricks);
+    }
+
+    // Weist jedem ViewModel den Stein an derselben Stelle zu (oder null, wenn es keinen gibt)
+    private static void Abgleichen(List<LegoBrickViewModel> viewModels, IReadOnlyList<LegoBrick> bricks)
+    {
+        for (int i = 0; i < viewModels.Count; i++)
         {
-            brick.Refresh();
+            viewModels[i].Brick = i < bricks.Count ? bricks[i] : null;
+            viewModels[i].Refresh();
         }
     }
 }

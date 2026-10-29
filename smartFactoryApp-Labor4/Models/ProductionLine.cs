@@ -79,6 +79,15 @@ namespace smartFactoryApp.Models
             }
         }
 
+        // Ersetzt den Stein an Position index durch einen neuen Stein derselben Farbe.
+        // Der neue Stein liegt genau dort, wo der alte auf der Linie liegen würde.
+        public void NeuerStein(int index)
+        {
+            LegoBrick alt = bricks[index];
+            var pose = new Pose(alt.Heimat.X, alt.Heimat.Y, alt.HeimatWinkel);
+            bricks[index] = new LegoBrick(pose, Color, alt.Size);
+        }
+
         // Wird bei jedem Timer-Takt aufgerufen und bewegt jeden Stein um genau einen Schritt
         // entlang der Linie: 10 Takte hin, 10 Takte zurück
         public void Bewegen()
