@@ -52,8 +52,8 @@
                           BorderBrush="Gray">
                           <DataGrid.Columns>
                                 <DataGridTextColumn Header="Numer" Binding="{Binding Nummer}" x:DataType="local:newRow"/>
-                                <DataGridTextColumn Header="Numer" Binding="{Binding Name}" x:DataType="local:newRow"/>
-                                <DataGridTextColumn Header="Numer" Binding="{Binding Disziplin}" x:DataType="local:newRow"/>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" x:DataType="local:newRow"/>
+                                <DataGridTextColumn Header="Disziplin" Binding="{Binding Disziplin}" x:DataType="local:newRow"/>
                           </DataGrid.Columns>
                 </DataGrid>
         </Grid>
