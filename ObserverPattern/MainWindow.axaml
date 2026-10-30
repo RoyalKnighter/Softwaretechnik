@@ -1,0 +1,29 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="620" d:DesignHeight="380"
+        x:Class="ObserverPattern.MainWindow"
+        Title="ObserverPattern - Weather Monitoring" Height="380" Width="720">
+    
+    <Grid>
+    <Label x:Name="label" Content="Weather Displays" HorizontalAlignment="Left" Margin="340,50,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+    <TextBox x:Name="textWeather1" HorizontalAlignment="Left" Margin="300,100,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="220" IsReadOnly="True" IsVisible="False"/>
+    <TextBox x:Name="textWeather2" HorizontalAlignment="Left" Margin="300,160,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="220" IsReadOnly="True" IsVisible="False"/>
+    <TextBox x:Name="textWeather3" HorizontalAlignment="Left" Margin="300,220,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="220" IsReadOnly="True" IsVisible="False"/>
+    <TextBox x:Name="textWeather4" HorizontalAlignment="Left" Margin="300,280,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="220" IsReadOnly="True" IsVisible="False"/>
+    <Label x:Name="labelSensors" Content="Weather Sensors" HorizontalAlignment="Left" Margin="50,50,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+    <TextBox x:Name="textTemperature" HorizontalAlignment="Left" Margin="70,100,0,0" Text="" VerticalAlignment="Top" Width="60" IsReadOnly="True"/>
+    <TextBox x:Name="textHumidity" HorizontalAlignment="Left" Margin="70,160,0,0" Text="" VerticalAlignment="Top" Width="60" IsReadOnly="True"/>
+    <TextBox x:Name="textPressure" HorizontalAlignment="Left" Margin="70,220,0,0" Text="" VerticalAlignment="Top" Width="60" IsReadOnly="True"/>
+    <Rectangle HorizontalAlignment="Left" Height="100" Margin="177,125,0,0" Stroke="Black" StrokeThickness="1" VerticalAlignment="Top" Width="100"/>
+    <Label x:Name="labelWeather" Content="WeatherData" HorizontalAlignment="Left" Margin="180,160,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+    <Label x:Name="labelRegister" Content="Register" HorizontalAlignment="Left" Margin="550,50,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+    <CheckBox x:Name="checkConditions" Content="Conditions" HorizontalAlignment="Left" Margin="550,100,0,0" VerticalAlignment="Top" IsChecked="False" IsCheckedChanged="checkConditions_IsCheckedChanged"/>
+    <CheckBox x:Name="checkStatistics" Content="Statistics" HorizontalAlignment="Left" Margin="550,160,0,0" VerticalAlignment="Top" IsChecked="False" IsCheckedChanged="checkStatistics_IsCheckedChanged"/>
+    <CheckBox x:Name="checkHeatIndex" Content="HeatIndex" HorizontalAlignment="Left" Margin="550,220,0,0" VerticalAlignment="Top" IsChecked="False" IsCheckedChanged="checkHeatIndex_IsCheckedChanged"/>
+    <CheckBox x:Name="checkForecast" Content="Forecast" HorizontalAlignment="Left" Margin="550,280,0,0" VerticalAlignment="Top" IsChecked="False" IsCheckedChanged="checkForecast_IsCheckedChanged"/>
+    <Button x:Name="buttonStart" Content="Start" HorizontalAlignment="Left" Margin="55,285,0,0" VerticalAlignment="Top" FontWeight="Bold" Click="button_Click"/>
+    <Button x:Name="buttonStop" Content="Stop" HorizontalAlignment="Left" Margin="125,285,0,0" VerticalAlignment="Top" FontWeight="Bold" Click="buttonStop_Click"/>
+</Grid>
+</Window>
