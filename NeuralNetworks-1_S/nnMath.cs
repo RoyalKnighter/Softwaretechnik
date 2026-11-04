@@ -20,5 +20,5 @@ class nnMath
         return result;
     }
 
-    public double[] ActivationFunc(double[] inputs) => inputs.Select(x => 1.0 / (1.0 + Math.Exp(x))).ToArray();
+    public double[] ActivationFunc(double[] inputs) => inputs.Select(x => 1.0 / (1.0 + Math.Exp(-x))).ToArray();
 }
