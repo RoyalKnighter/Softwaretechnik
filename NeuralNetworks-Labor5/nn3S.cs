@@ -27,7 +27,7 @@ namespace NeuralNetworks_1
         public double[,] WHO { get { return who; } }
         public double[] Hidden_inputs { get { return hidden_inputs; } }
         public double[] Hidden_outputs { get { return hidden_outputs; } }
-        public double[] Hidden_errors { get { return hidden_outputs; } }
+        public double[] Hidden_errors { get { return hidden_errors; } }
         public double[] Final_inputs { get { return final_inputs; } }
         public double[] Final_outputs { get { return final_outputs; } }
         public double[] Output_errors { get { return output_errors; } }
@@ -88,19 +88,18 @@ namespace NeuralNetworks_1
         public void setWIHMatrix() { }
         public void train(double[] inputs, double[] targets)
         {
-            queryNN(inputs);                                              // 1
+            queryNN(inputs);
 
-            output_errors = targets.Zip(final_outputs, (x, y) => x - y).ToArray(); /* targets - final_outputs */ 
-            hidden_errors = m.matrixMult(m.transpose(who), output_errors); // 3
+            output_errors = targets.Zip(final_outputs, (x, y) => x - y).ToArray();
+            hidden_errors = nnMathO.matrixMult(nnMathO.transpose(who), output_errors);
 
-            // 4: Gradient der Ausgabeschicht, ein Wert pro Ausgabeknoten
-            double[] deltaOut = m.vectorMult(output_errors,
-                                 m.vectorMult(final_outputs, /* 1 - final_outputs */));
-            who = m.matrixSum(who, m.matrixScale(m.fullMatrixMult(hidden_outputs, deltaOut), learningRate));
+            double[] deltaOut = nnMathO.vectorMult(output_errors,
+                                 nnMathO.vectorMult(final_outputs, final_outputs.Select(x => 1 - x).ToArray()));
+            who = nnMathO.matrixSum(who, nnMathO.matrixScale(nnMathO.fullMatrixMult(hidden_outputs, deltaOut), learningRate));
 
             // 5: dasselbe für die versteckte Schicht
-            double[] deltaHid = /* hidden_errors * hidden_outputs * (1 - hidden_outputs) */;
-            wih = m.matrixSum(wih, m.matrixScale(m.fullMatrixMult(inputs, deltaHid), learningRate));
+            double[] deltaHid = nnMathO.vectorMult(hidden_errors , nnMathO.vectorMult(hidden_outputs, hidden_outputs.Select(x => 1 - x).ToArray()));
+            wih = nnMathO.matrixSum(wih, nnMathO.matrixScale(nnMathO.fullMatrixMult(inputs, deltaHid), learningRate));
         }
         public void updateWeights() { }
     }
