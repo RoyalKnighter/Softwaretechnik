@@ -1,0 +1,26 @@
+<Window x:Class="IntroDesignPatterns.MainWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <TextBox x:Name="textBoxStock" HorizontalAlignment="Left" Margin="230,130,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="480"/>
+        <TextBox x:Name="textBoxMoor" HorizontalAlignment="Left" Margin="230,180,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="487"/>
+        <TextBox x:Name="textBoxGummi" HorizontalAlignment="Left" Margin="230,230,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="483"/>
+        <TextBox x:Name="textBoxLock" HorizontalAlignment="Left" Margin="230,280,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="483"/>
+        <TextBox x:Name="textBoxModell" HorizontalAlignment="Left" Margin="230,330,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="483"/>
+        <Label x:Name="label" Content="SimEnte" HorizontalAlignment="Left" Margin="400,50,0,0" VerticalAlignment="Top" FontSize="24" Background="White" Foreground="Red"/>
+        <Label x:Name="label_Copy" Content="StockEnte" HorizontalAlignment="Left" Margin="150,130,0,0" VerticalAlignment="Top" FontSize="16" Background="White" Foreground="#FF0004FF"/>
+        <Label x:Name="label_Copy1" Content="MoorEnte" HorizontalAlignment="Left" Margin="146,180,0,0" VerticalAlignment="Top" FontSize="16" Background="White" Foreground="#FF0004FF" Width="83"/>
+        <Label x:Name="label_Copy2" Content="GummiEnte" HorizontalAlignment="Left" Margin="136,230,0,0" VerticalAlignment="Top" FontSize="16" Background="White" Foreground="#FF0004FF" Width="93"/>
+        <Label x:Name="label_Copy3" Content="LockEnte" HorizontalAlignment="Left" Margin="136,280,0,0" VerticalAlignment="Top" FontSize="16" Background="White" Foreground="#FF0004FF" Width="93"/>
+        <Label x:Name="label_Copy4" Content="ModellEnte" HorizontalAlignment="Left" Margin="136,330,0,0" VerticalAlignment="Top" FontSize="16" Background="White" Foreground="#FF0004FF" Width="93"/>
+        <Button x:Name="button" Content="Anzeigen" HorizontalAlignment="Left" Margin="230,380,0,0" VerticalAlignment="Top" Click="button_Click"/>
+        <Button x:Name="button_Copy" Content="Fliegen" HorizontalAlignment="Left" Margin="335,380,0,0" VerticalAlignment="Top" Click="button_Copy_Click"/>
+        <Button x:Name="button_Quaken" Content="Quaken" HorizontalAlignment="Left" Margin="420,380,0,0" VerticalAlignment="Top" Click="button_Quaken_Click"/>
+        <Button x:Name="button_Schwimmen" Content="Schwimmen" HorizontalAlignment="Left" Margin="520,380,0,0" VerticalAlignment="Top" Click="button_Schwimmen_Click"/>
+        <Button x:Name="button_Raketen" Content="Raketen Antrieb" HorizontalAlignment="Left" Margin="620,380,0,0" VerticalAlignment="Top" Click="button_Raketen_Click"/>
+    </Grid>
+</Window>
