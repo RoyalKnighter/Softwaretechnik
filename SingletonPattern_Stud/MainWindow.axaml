@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="SingletonPattern.MainWindow"
+        Title="Singleton Pattern" Height="220" Width="650">
+    <Grid>
+        <Label x:Name="labelNachricht" Content="Nachricht" HorizontalAlignment="Left" Margin="50,40,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <Label x:Name="labelAusgabe" Content="sayHi()" HorizontalAlignment="Left" Margin="330,40,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+        <TextBox x:Name="textMessage1" HorizontalAlignment="Left" Margin="50,80,0,0" Text="Objekt_1" VerticalAlignment="Top" Width="130"/>
+        <Button x:Name="buttonInstanz1" Content="getInstanz" HorizontalAlignment="Left" Margin="195,80,0,0" VerticalAlignment="Top" Click="buttonInstanz1_Click"/>
+        <TextBox x:Name="textAusgabe1" HorizontalAlignment="Left" Margin="330,80,0,0" Text="" VerticalAlignment="Top" Width="270" IsReadOnly="True"/>
+        <TextBox x:Name="textMessage2" HorizontalAlignment="Left" Margin="50,130,0,0" Text="Objekt_2" VerticalAlignment="Top" Width="130"/>
+        <Button x:Name="buttonInstanz2" Content="getInstanz" HorizontalAlignment="Left" Margin="195,130,0,0" VerticalAlignment="Top" Click="buttonInstanz2_Click"/>
+        <TextBox x:Name="textAusgabe2" HorizontalAlignment="Left" Margin="330,130,0,0" Text="" VerticalAlignment="Top" Width="270" IsReadOnly="True"/>
+    </Grid>
+</Window>
