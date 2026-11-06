@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+mnistDB-NeuronaleNetzwerke/
+mnistDB-Zalando/
+
 # dotenv files
 .env
 

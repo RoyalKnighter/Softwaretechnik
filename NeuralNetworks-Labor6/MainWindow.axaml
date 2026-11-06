@@ -1,0 +1,38 @@
+<Window x:Class="NeuralNetworks_1.MainWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NeuralNetworks_1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="1400">
+    <Grid>
+        <Button x:Name="queryButton" Content="QueryButton" HorizontalAlignment="Left" Margin="1200,501,0,0" VerticalAlignment="Top" Width="120" IsEnabled="False" Click="queryButton_Click"/>
+        <Button x:Name="trainButton" Content="TrainButton" HorizontalAlignment="Left" Margin="1200,450,0,0" VerticalAlignment="Top" Width="120" IsEnabled="False" Click="trainButton_Click"/>
+        <Button x:Name="createButton" Content="CreateButton" HorizontalAlignment="Left" Margin="1200,400,0,0" VerticalAlignment="Top" Width="120" Click="createButton_Click"/>
+        <TextBox x:Name="outputTextBox" HorizontalAlignment="Left" Margin="1200,300,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="hiddenTextBox" HorizontalAlignment="Left" Margin="1200,250,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="inputTextBox" HorizontalAlignment="Left" Margin="1200,200,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="learningRateTextBox" HorizontalAlignment="Left" Margin="1200,150,0,0" TextWrapping="Wrap" Text="0.1" VerticalAlignment="Top" Width="120"/>
+        <DataGrid x:Name="networkDataGrid" HorizontalAlignment="Left" Height="550" Margin="10,10,0,0" VerticalAlignment="Top" Width="1100"
+                  GridLinesVisibility="All" BorderThickness="1" BorderBrush="Gray">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="InputLayer" Width="80" Binding="{Binding inputValue}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="WeightsIH" Binding="{Binding weightsIH}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="InputHidden" Binding="{Binding inputHidden}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="OutputHidden" Binding="{Binding outputHidden}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="WeightsH-O" Binding="{Binding weightsHO}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="ErrorHidden" Width="80" Binding="{Binding errorHidden}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="InputOutput" Width="80" Binding="{Binding inputOutput}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="OutputLayer" Width="80" Binding="{Binding outputLayer}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="Target" Width="80" Binding="{Binding target}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="ErrorOutput" Width="80" Binding="{Binding errorOutput}" x:DataType="local:nodeRow"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock x:Name="statusTextBlock" HorizontalAlignment="Left" Margin="1200,345,0,0" VerticalAlignment="Top" Width="125" TextWrapping="Wrap" FontSize="12" Text="Set the sizes and click Create."/>
+        <Label Content="Learning Rate" HorizontalAlignment="Left" Margin="1197,122,0,0" VerticalAlignment="Top"/>
+        <Label Content="Input Nodes" HorizontalAlignment="Left" Margin="1197,172,0,0" VerticalAlignment="Top"/>
+        <Label Content="Hidden Nodes" HorizontalAlignment="Left" Margin="1197,222,0,0" VerticalAlignment="Top"/>
+        <Label Content="Output Nodes" HorizontalAlignment="Left" Margin="1197,272,0,0" VerticalAlignment="Top"/>
+    </Grid>
+</Window>
