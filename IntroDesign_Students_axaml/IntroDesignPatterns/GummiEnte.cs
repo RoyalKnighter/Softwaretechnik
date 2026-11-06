@@ -8,8 +8,8 @@ namespace IntroDesignPatterns
     {
         public GummiEnte()
         {
-            altesFliegen = new FliegtGarnicht();
-            setFlugverhalten(altesFliegen);
+            normalFliegen = new FliegtGarnicht();
+            setFlugverhalten(normalFliegen);
             setQuackVerhalten(new Quietscht());
             setSchwimmVerhalten(new Schwimmt());
         }

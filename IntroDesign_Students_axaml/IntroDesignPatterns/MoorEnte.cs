@@ -10,8 +10,8 @@ namespace IntroDesignPatterns
     {
         public MoorEnte()
         {
-            altesFliegen = new FliegtMitFluegeln();
-            setFlugverhalten(altesFliegen);
+            normalFliegen = new FliegtMitFluegeln();
+            setFlugverhalten(normalFliegen);
             setQuackVerhalten(new QuacktLaut());
             setSchwimmVerhalten(new Schwimmt());
         }

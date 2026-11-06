@@ -11,7 +11,7 @@ namespace IntroDesignPatterns
         public Flugverhalten flugverhalten;
         public QuackVerhalten quackVerhalten;
         public Schwimmverhalten schwimmverhalten;
-        public Flugverhalten altesFliegen;
+        public Flugverhalten normalFliegen;
         public String fliegen() => flugverhalten.fliegen();
         public String quaken() => quackVerhalten.quacken();
         public String schwimmen() => schwimmverhalten.schwimmen();
@@ -19,6 +19,6 @@ namespace IntroDesignPatterns
         public void setFlugverhalten(Flugverhalten flugverhalten) => this.flugverhalten = flugverhalten;
         public void setQuackVerhalten(QuackVerhalten quackVerhalten) => this.quackVerhalten = quackVerhalten;
         public void setSchwimmVerhalten(Schwimmverhalten schwimmverhalten) => this.schwimmverhalten = schwimmverhalten;
-        public void anderesFliegen() => setFlugverhalten((flugverhalten is FliegtRaketenbetrieben) ? altesFliegen : new FliegtRaketenbetrieben());
+        public void anderesFliegen() => setFlugverhalten((flugverhalten is FliegtRaketenbetrieben) ? normalFliegen : new FliegtRaketenbetrieben());
     }
 }

@@ -4,8 +4,8 @@ namespace IntroDesignPatterns
     {
         public ModellEnte()
         {
-            altesFliegen = new FliegtGarnicht();
-            setFlugverhalten(altesFliegen);
+            normalFliegen = new FliegtGarnicht();
+            setFlugverhalten(normalFliegen);
             setQuackVerhalten(new Quackgarnicht());
             setSchwimmVerhalten(new SchwimmtGarnicht());
         }
