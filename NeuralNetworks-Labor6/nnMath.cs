@@ -7,11 +7,14 @@ class nnMath
 {
     public double[] matrixMult(double[,] mat1, double[] mat2)
     {
-        double[] result = new double[mat2.Length];
+        int from = mat1.GetLength(0);   // Herkunftsknoten, z. B. 784
+        int to = mat1.GetLength(1);   // Zielknoten, z. B. 100
 
-        for (int y = 0; y < result.Length; y++)
+        double[] result = new double[to];
+
+        for (int y = 0; y < to; y++)
         {
-            for (int x = 0; x < mat2.Length; x++)
+            for (int x = 0; x < from; x++)
             {
                 result[y] += mat1[x, y] * mat2[x];
             }

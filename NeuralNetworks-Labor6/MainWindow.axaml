@@ -5,34 +5,142 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NeuralNetworks_1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1400">
-    <Grid>
-        <Button x:Name="queryButton" Content="QueryButton" HorizontalAlignment="Left" Margin="1200,501,0,0" VerticalAlignment="Top" Width="120" IsEnabled="False" Click="queryButton_Click"/>
-        <Button x:Name="trainButton" Content="TrainButton" HorizontalAlignment="Left" Margin="1200,450,0,0" VerticalAlignment="Top" Width="120" IsEnabled="False" Click="trainButton_Click"/>
-        <Button x:Name="createButton" Content="CreateButton" HorizontalAlignment="Left" Margin="1200,400,0,0" VerticalAlignment="Top" Width="120" Click="createButton_Click"/>
-        <TextBox x:Name="outputTextBox" HorizontalAlignment="Left" Margin="1200,300,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="hiddenTextBox" HorizontalAlignment="Left" Margin="1200,250,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="inputTextBox" HorizontalAlignment="Left" Margin="1200,200,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="learningRateTextBox" HorizontalAlignment="Left" Margin="1200,150,0,0" TextWrapping="Wrap" Text="0.1" VerticalAlignment="Top" Width="120"/>
-        <DataGrid x:Name="networkDataGrid" HorizontalAlignment="Left" Height="550" Margin="10,10,0,0" VerticalAlignment="Top" Width="1100"
+        Title="Neural Networks - Lab 3" Width="1200" Height="800" MinWidth="900" MinHeight="650">
+
+    <!-- Gemeinsames Aussehen für die Abschnitte rechts (Avalonia hat keine GroupBox) -->
+    <Window.Styles>
+        <Style Selector="Border.section">
+            <Setter Property="BorderBrush" Value="#D0D0D0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="10,6,10,10"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        <Style Selector="TextBlock.header">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+        <Style Selector="Grid.form > TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Grid.form > TextBox">
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="0,2"/>
+        </Style>
+        <Style Selector="Border.section Button">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid ColumnDefinitions="*,300" Margin="10">
+
+        <!-- ===== Links: Tabelle ===== -->
+        <DataGrid x:Name="networkDataGrid" Grid.Column="0" Margin="0,0,10,0"
                   GridLinesVisibility="All" BorderThickness="1" BorderBrush="Gray">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="InputLayer" Width="80" Binding="{Binding inputValue}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="InputLayer" Binding="{Binding inputValue}" x:DataType="local:nodeRow"/>
                 <DataGridTextColumn Header="WeightsIH" Binding="{Binding weightsIH}" x:DataType="local:nodeRow"/>
                 <DataGridTextColumn Header="InputHidden" Binding="{Binding inputHidden}" x:DataType="local:nodeRow"/>
                 <DataGridTextColumn Header="OutputHidden" Binding="{Binding outputHidden}" x:DataType="local:nodeRow"/>
                 <DataGridTextColumn Header="WeightsH-O" Binding="{Binding weightsHO}" x:DataType="local:nodeRow"/>
-                <DataGridTextColumn Header="ErrorHidden" Width="80" Binding="{Binding errorHidden}" x:DataType="local:nodeRow"/>
-                <DataGridTextColumn Header="InputOutput" Width="80" Binding="{Binding inputOutput}" x:DataType="local:nodeRow"/>
-                <DataGridTextColumn Header="OutputLayer" Width="80" Binding="{Binding outputLayer}" x:DataType="local:nodeRow"/>
-                <DataGridTextColumn Header="Target" Width="80" Binding="{Binding target}" x:DataType="local:nodeRow"/>
-                <DataGridTextColumn Header="ErrorOutput" Width="80" Binding="{Binding errorOutput}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="ErrorHidden" Binding="{Binding errorHidden}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="InputOutput" Binding="{Binding inputOutput}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="OutputLayer" Binding="{Binding outputLayer}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="Target" Binding="{Binding target}" x:DataType="local:nodeRow"/>
+                <DataGridTextColumn Header="ErrorOutput" Binding="{Binding errorOutput}" x:DataType="local:nodeRow"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock x:Name="statusTextBlock" HorizontalAlignment="Left" Margin="1200,345,0,0" VerticalAlignment="Top" Width="125" TextWrapping="Wrap" FontSize="12" Text="Set the sizes and click Create."/>
-        <Label Content="Learning Rate" HorizontalAlignment="Left" Margin="1197,122,0,0" VerticalAlignment="Top"/>
-        <Label Content="Input Nodes" HorizontalAlignment="Left" Margin="1197,172,0,0" VerticalAlignment="Top"/>
-        <Label Content="Hidden Nodes" HorizontalAlignment="Left" Margin="1197,222,0,0" VerticalAlignment="Top"/>
-        <Label Content="Output Nodes" HorizontalAlignment="Left" Margin="1197,272,0,0" VerticalAlignment="Top"/>
+
+        <!-- ===== Rechts: Bedienfeld ===== -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <!-- Network Setup -->
+                <Border Classes="section">
+                    <StackPanel>
+                        <TextBlock Classes="header" Text="Network Setup"/>
+                        <Grid Classes="form" ColumnDefinitions="*,140" RowDefinitions="Auto,Auto,Auto,Auto">
+                            <TextBlock Grid.Row="0" Text="Learning Rate"/>
+                            <TextBox   Grid.Row="0" Grid.Column="1" x:Name="learningRateTextBox" Text="0.3"/>
+                            <TextBlock Grid.Row="1" Text="Input Nodes"/>
+                            <TextBox   Grid.Row="1" Grid.Column="1" x:Name="inputTextBox" Text="784"/>
+                            <TextBlock Grid.Row="2" Text="Hidden Nodes"/>
+                            <TextBox   Grid.Row="2" Grid.Column="1" x:Name="hiddenTextBox" Text="100"/>
+                            <TextBlock Grid.Row="3" Text="Output Nodes"/>
+                            <TextBox   Grid.Row="3" Grid.Column="1" x:Name="outputTextBox" Text="10"/>
+                        </Grid>
+                        <Button x:Name="createButton" Content="Create Network" Margin="0,8,0,0"
+                                Click="createButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Training -->
+                <Border Classes="section">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="header" Text="Training"/>
+                        <Grid Classes="form" ColumnDefinitions="*,140">
+                            <TextBlock Text="Epochen"/>
+                            <TextBox Grid.Column="1" x:Name="epochsTextBox" Text="1"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,6,*">
+                            <Button Grid.Column="0" x:Name="openTrainingFileButton" Content="Open Training File"
+                                    Click="openTrainButton_Click"/>
+                            <Button Grid.Column="2" x:Name="trainButton" Content="Train Network" IsEnabled="False"
+                                    Click="trainButton_Click"/>
+                        </Grid>
+                        <Button x:Name="loadWeightsButton" Content="Load Weight Matrices"
+                                />
+                    </StackPanel>
+                </Border>
+
+                <!-- Testing -->
+                <Border Classes="section">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="header" Text="Testing"/>
+                        <Grid ColumnDefinitions="*,6,*">
+                            <Button Grid.Column="0" x:Name="openTestFileButton" Content="Open Test File"
+                                    Click="openTestButton_Click"/>
+                            <Button Grid.Column="2" x:Name="queryButton" Content="Query Network" IsEnabled="False"
+                                    Click="queryButton_Click"/>
+                        </Grid>
+                        <Grid Classes="form" ColumnDefinitions="*,140">
+                            <TextBlock Text="Performance"/>
+                            <TextBox Grid.Column="1" x:Name="performanceTextBox" Text="0" IsReadOnly="True"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Image -->
+                <Border Classes="section">
+                    <StackPanel>
+                        <TextBlock Classes="header" Text="Image"/>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <!-- Bildfeld: "no image" liegt hinter dem Bild und ist sichtbar, solange kein Bild gesetzt ist -->
+                            <Border Width="130" Height="130" BorderBrush="#555555" BorderThickness="2"
+                                    CornerRadius="4" Background="White" ClipToBounds="True">
+                                <Grid>
+                                    <TextBlock Text="no image" FontStyle="Italic" Foreground="Gray"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Image x:Name="digitImage" Stretch="Uniform"/>
+                                </Grid>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="8">
+                                <CheckBox x:Name="showImagesCheckBox" Content="Show Images"/>
+                                <TextBlock Text="Recognized" Margin="0,4,0,0"/>
+                                <Border BorderBrush="#AAAAAA" BorderThickness="1" Height="40" Background="White">
+                                    <TextBlock x:Name="recognizedTextBlock" Text="?" FontSize="20" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Statuszeile (wird vom Code-behind benutzt) -->
+                <TextBlock x:Name="statusTextBlock" TextWrapping="Wrap" FontSize="12" Foreground="Gray"
+                           Text="Set the sizes and click Create Network."/>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>

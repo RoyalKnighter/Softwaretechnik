@@ -1,25 +1,29 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
+using Avalonia.Platform.Storage;
+
 namespace NeuralNetworks_1;
 
 public partial class MainWindow : Window
 {
-    int inodes = 3, hnodes = 3, onodes = 3;
+    int inodes = 784, hnodes = 100, onodes = 10;
     nn3S nn3SO;
+    int trainCount = 0;
     double[] inputs;
     double[] targets;
-    double learningRate = 0.1; //learning rate
+    string trainFile = "";
+    string testFile = "";
+    double learningRate = 0.3; //learning rate
                                // Avalonia's DataGrid has no Items.Add(), rows are added to a bound collection instead
     ObservableCollection<nodeRow> rows = new ObservableCollection<nodeRow>();
     // example values from the lab, repeated if the network has more than 3 inputs
-    static readonly double[] exampleInputs = { 0.9, 0.1, 0.8 };
-    const double exampleTarget = 0.9;
     public MainWindow()
     {
         InitializeComponent();
@@ -72,25 +76,29 @@ public partial class MainWindow : Window
         statusTextBlock.Text = String.Format(CultureInfo.InvariantCulture,
         "Network {0}-{1}-{2} created, learning rate {3}.", inodes, hnodes, onodes, learningRate);
     }
-    private void createInputs()
+    private async void trainButton_Click(object sender, RoutedEventArgs e)
     {
-        inputs = new double[inodes];
-        for (int i = 0; i < inodes; i++)
-            inputs[i] = exampleInputs[i % exampleInputs.Length];
-    }
-    private void trainButton_Click(object sender, RoutedEventArgs e)
-    {
-        createInputs();
-        targets = new double[onodes];
-        for (int i = 0; i < onodes; i++)
-            targets[i] = exampleTarget;
-        nn3SO.train(inputs, targets);
+        using (StreamReader sr = new StreamReader(trainFile))
+        {
+            string line;
+            int intTarget;
+            while ((line = sr.ReadLine()) != null && (line != ""))
+            {
+                Console.WriteLine(line);
+                intTarget = readInputs(line);
+                targets = new double[onodes];
+                for (int i = 0; i < onodes; i++)
+                    targets[i] = 0.01;
+                targets[intTarget] = 0.99;
+                nn3SO.train(inputs, targets);
+                trainCount++;
+            }
+        }
+        
         displayResults(true);
-        statusTextBlock.Text = "Trained once.";
     }
     private void queryButton_Click(object sender, RoutedEventArgs e)
     {
-        createInputs();
         nn3SO.queryNN(inputs);
         displayResults(false);
         statusTextBlock.Text = "Queried.";
@@ -129,6 +137,66 @@ public partial class MainWindow : Window
             };
             rows.Add(data);
         }
+    }
+
+    private int readInputs(string line)
+    {
+        int i, j;
+        inputs = new double[inodes];
+        string[] input;
+        input = line.Split(',');
+        for (i = 1; i < input.Length; i++)
+        {
+            j = i - 1;
+            inputs[j] = (Convert.ToDouble(input[i])
+            * 0.99 / 255.0) + 0.01;
+        }
+        return (Convert.ToInt32(input[0]));
+    }
+
+    public void epochenBox_PreviewTextInput()
+    {
+        epochsTextBox.Text = trainCount.ToString();
+    }
+
+    private async void openTrainButton_Click(object sender, RoutedEventArgs e)
+    {
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Trainingsdatei öffnen",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+            new FilePickerFileType("CSV / Text") { Patterns = new[] { "*.csv", "*.txt" } },
+            FilePickerFileTypes.All
+        }
+        });
+
+        if (files.Count == 0)          // Benutzer hat abgebrochen
+            return;
+
+        trainFile = files[0].TryGetLocalPath();   // voller Pfad als string, z. B. C:\...\mnist_train.csv
+        statusTextBlock.Text = "Training file: " + files[0].Name;
+    }
+
+    private async void openTestButton_Click(object sender, RoutedEventArgs e)
+    {
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Trainingsdatei öffnen",
+            AllowMultiple = false,
+            FileTypeFilter = new[]
+            {
+            new FilePickerFileType("CSV / Text") { Patterns = new[] { "*.csv", "*.txt" } },
+            FilePickerFileTypes.All
+        }
+        });
+
+        if (files.Count == 0)          // Benutzer hat abgebrochen
+            return;
+
+        testFile = files[0].TryGetLocalPath();   // voller Pfad als string, z. B. C:\...\mnist_train.csv
+        statusTextBlock.Text = "Training file: " + files[0].Name;
     }
 }
 

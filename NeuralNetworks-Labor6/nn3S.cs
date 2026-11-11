@@ -42,30 +42,57 @@ namespace NeuralNetworks_1
             createWeightMatrizes();
         }
 
+        // als Feld in der Klasse nn3S
+        private static readonly Random rnd = new Random();
+
         private void createWeightMatrizes()
         {
             wih = new double[inodes, hnodes];
             who = new double[hnodes, onodes];
+            setWIHMatrix();
+            setWHOMatrix();
+        }
 
-            wih[0, 0] = 0.9; //spalte, reihe
-            wih[1, 0] = 0.3;
-            wih[2, 0] = 0.4;
-            wih[0, 1] = 0.2;
-            wih[1, 1] = 0.8;
-            wih[2, 1] = 0.2;
-            wih[0, 2] = 0.1;
-            wih[1, 2] = 0.5;
-            wih[2, 2] = 0.6;
+        public void setWIHMatrix()
+        {
+            if (inodes == 3 && hnodes == 3)
+            {
+                // Beispielwerte aus der Folie [von, nach]
+                wih[0, 0] = 0.9; wih[1, 0] = 0.3; wih[2, 0] = 0.4;
+                wih[0, 1] = 0.2; wih[1, 1] = 0.8; wih[2, 1] = 0.2;
+                wih[0, 2] = 0.1; wih[1, 2] = 0.5; wih[2, 2] = 0.6;
+            }
+            else
+            {
+                fillRandom(wih);
+            }
+        }
 
-            who[0, 0] = 0.3;
-            who[1, 0] = 0.7;
-            who[2, 0] = 0.5;
-            who[0, 1] = 0.6;
-            who[1, 1] = 0.5;
-            who[2, 1] = 0.2;
-            who[0, 2] = 0.8;
-            who[1, 2] = 0.1;
-            who[2, 2] = 0.9;
+        public void setWHOMatrix()
+        {
+            if (hnodes == 3 && onodes == 3)
+            {
+                who[0, 0] = 0.3; who[1, 0] = 0.7; who[2, 0] = 0.5;
+                who[0, 1] = 0.6; who[1, 1] = 0.5; who[2, 1] = 0.2;
+                who[0, 2] = 0.8; who[1, 2] = 0.1; who[2, 2] = 0.9;
+            }
+            else
+            {
+                fillRandom(who);
+            }
+        }
+
+        // füllt jede Zelle mit einem Zufallswert zwischen -1/√n und +1/√n,
+        // n = Anzahl der Knoten, aus denen die Verbindungen kommen
+        private void fillRandom(double[,] matrix)
+        {
+            int from = matrix.GetLength(0);
+            int to = matrix.GetLength(1);
+            double range = 1.0 / Math.Sqrt(from);
+
+            for (int i = 0; i < from; i++)
+                for (int j = 0; j < to; j++)
+                    matrix[i, j] = (rnd.NextDouble() * 2.0 - 1.0) * range;
         }
 
         public void queryNN(double[] inputs)
@@ -84,8 +111,6 @@ namespace NeuralNetworks_1
 
         }
 
-        public void setWHOMatrix() { }
-        public void setWIHMatrix() { }
         public void train(double[] inputs, double[] targets)
         {
             queryNN(inputs);
@@ -98,7 +123,7 @@ namespace NeuralNetworks_1
             who = nnMathO.matrixSum(who, nnMathO.matrixScale(nnMathO.fullMatrixMult(hidden_outputs, deltaOut), learningRate));
 
             // 5: dasselbe für die versteckte Schicht
-            double[] deltaHid = nnMathO.vectorMult(hidden_errors , nnMathO.vectorMult(hidden_outputs, hidden_outputs.Select(x => 1 - x).ToArray()));
+            double[] deltaHid = nnMathO.vectorMult(hidden_errors, nnMathO.vectorMult(hidden_outputs, hidden_outputs.Select(x => 1 - x).ToArray()));
             wih = nnMathO.matrixSum(wih, nnMathO.matrixScale(nnMathO.fullMatrixMult(inputs, deltaHid), learningRate));
         }
         public void updateWeights() { }
