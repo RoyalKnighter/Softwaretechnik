@@ -2,18 +2,38 @@ using System;
 using System.Drawing;
 using System.Collections.Generic;
 using static smartFactoryApp.Models.Parameters;
-using Avalonia.Controls;
 
 namespace smartFactoryApp.Models
 {
     public class Beweger
     {
-        public static Beweger dockObjekt = null;
-        // Position intern als Kommazahl, damit schräges Fahren nicht durch Runden verfälscht wird
+        // Der Stein, den der Roboter gerade hält (null = nichts gegriffen)
+        private static Beweger? dockobjekt = null;
+
+        // NEU (UML): Winkel des gegriffenen Steins relativ zum Roboter, damit er beim Drehen mitdreht
+        private static double dockWinkelOffset = 0;
+
+        // NEU (UML): Linien, auf denen ein Stein abgelegt werden darf.
+        // TODO: noch ungenutzt, im Moment darf nur auf der Delivery-Linie abgelegt werden.
+        private static List<Pose>? dockLines = null;
+
+        // NEU (UML): Linien, mit denen der Roboter kollidieren kann.
+        // TODO: noch ungenutzt, KollidiertMitProduktionslinie liest die Linien aus ViewParameters.
+        private static List<ProductionLine>? productionLines = null;
+
+        // NEU (UML): Toleranz in Pixeln, um die eine Linie beim Ablegen größer gerechnet wird,
+        // weil der Roboter wegen der Kollision nicht ganz an die Linie heranfahren kann
+        private const int LinienToleranz = 10;
+
         private int x;
         private int y;
         private double angle;
         private Rectangle borders;
+
+        // NEU (UML): Startposition bzw. "Heimat". Bei Legosteinen ist das der Platz auf ihrer
+        // Produktionslinie; er pendelt mit der Linie mit, damit ein Stein dorthin zurückkann.
+        protected Pose pose;
+
         protected const int RobotWidth = 70;   // ungedrehte Größe des Roboters, wie im XAML
         protected const int RobotHeight = 50;
 
@@ -21,6 +41,12 @@ namespace smartFactoryApp.Models
         public int Y { get => y; set => y = value; }
         public double Angle { get => angle; set => angle = value; }
         public Rectangle Borders { get => borders; set => borders = value; }
+
+        // NEU (UML): der Stein, den der Roboter gerade hält
+        public static Beweger? Dockobjekt => dockobjekt;
+
+        // NEU (UML): aktuelle Position und Drehung zusammen
+        public Pose Pose => new Pose(X, Y, Angle);
 
         // Linke obere Ecke als ganzzahliger Punkt
         public Point Location
@@ -32,23 +58,35 @@ namespace smartFactoryApp.Models
         public Beweger(Point location)
         {
             Location = location;
+            pose = new Pose(location.X, location.Y, 0);
         }
         public Beweger(Point location, Rectangle borders)
         {
             Location = location;
             Borders = borders;
+            pose = new Pose(location.X, location.Y, 0);
         }
         public Beweger(Pose pose)
         {
             Location = pose.Location;
             Angle = pose.Angle;
             Borders = ViewParameters.Borders;
+            this.pose = pose;
         }
         public Beweger(Pose pose, Rectangle borders)
         {
             Location = pose.Location;
             Angle = pose.Angle;
             Borders = borders;
+            this.pose = pose;
+        }
+
+        // NEU (UML): setzt Position und Drehung auf einmal
+        public void SetzePose(Pose neuePose)
+        {
+            X = neuePose.X;
+            Y = neuePose.Y;
+            Angle = neuePose.Angle;
         }
 
         // Einfache Bewegung um einen Schritt. Die linke obere Ecke muss in Borders bleiben,
@@ -225,7 +263,7 @@ namespace smartFactoryApp.Models
             }
         }
 
-        public Point GreifPunkt()
+        public Point Greifpunkt()
         {
             double rad = Angle * Math.PI / 180;
             double cos = Math.Cos(rad);
@@ -240,12 +278,12 @@ namespace smartFactoryApp.Models
 
         public void Kontakt(List<LegoBrick> bricks)
         {
-            Point greifPunkt = GreifPunkt();
+            Point greifPunkt = Greifpunkt();
 
             foreach (LegoBrick brick in bricks)
             {
-                // Steine auf der Delivery-Linie dürfen nicht wieder gegriffen werden
-                if (brick.Ausgeliefert) continue;
+                // Nur Steine, die auf einer Linie liegen, können gegriffen werden
+                if (brick.Status != BrickStatus.onLine) continue;
 
                 int x = brick.X;
                 int y = brick.Y;
@@ -257,47 +295,66 @@ namespace smartFactoryApp.Models
                     greifPunkt.Y < (y + 12)
                 )
                 {
-                    brick.Gedockt = true;
-                    dockObjekt = brick;
+                    brick.Andocken();
+                    dockobjekt = brick;
+                    dockWinkelOffset = brick.Angle - Angle;
                     return;
                 }
             }
         }
 
         // Lässt den Stein los, aber nur über der Delivery-Linie.
-        // Gibt den losgelassenen Stein zurück, oder null, wenn nicht losgelassen wurde.
-        public static LegoBrick? Undock()
+        // Gibt zurück, ob losgelassen wurde. Wohin der Stein danach fährt, entscheidet die Factory.
+        public static bool Undock()
         {
-            if (dockObjekt is not LegoBrick brick) return null;
-
-            // Delivery-Linie mit 10 Pixel Toleranz, weil der Roboter wegen der
-            // Kollision nicht ganz an die Linie heranfahren kann
-            Rectangle delivery = new Rectangle(
-                ViewParameters.RectDeliveryPose.X, ViewParameters.RectDeliveryPose.Y,
-                ViewParameters.ProductionDeliveryWidth, ViewParameters.ProductionDeliveryHeight);
-            delivery.Inflate(10, 10);
-
-            // Mittelpunkt des 12x12-Steins muss über der Linie liegen
-            if (!delivery.Contains(brick.X + 6, brick.Y + 6)) return null;
-
-            brick.Gedockt = false;
-            brick.Ausgeliefert = true;
+            if (dockobjekt == null) return false;
+            if (!AufDeliveryLinie(dockobjekt)) return false;
 
             // Stein gerade und mittig auf die Delivery-Linie legen
-            brick.Y = ViewParameters.RectDeliveryPose.Y + ViewParameters.ProductionDeliveryHeight / 2 - 6;
-            brick.Angle = ViewParameters.RectDeliveryPose.Angle;
+            dockobjekt.Y = ViewParameters.RectDeliveryPose.Y + ViewParameters.ProductionDeliveryHeight / 2 - 6;
+            dockobjekt.Angle = ViewParameters.RectDeliveryPose.Angle;
 
-            dockObjekt = null;
-            return brick;
+            dockobjekt = null;
+            return true;
+        }
+
+        // NEU (UML): Liegt der Mittelpunkt des 12x12-Objekts über der Delivery-Linie?
+        private static bool AufDeliveryLinie(Beweger objekt)
+        {
+            return AufLinie(objekt, ViewParameters.RectDeliveryPose,
+                            ViewParameters.ProductionDeliveryWidth, ViewParameters.ProductionDeliveryHeight);
+        }
+
+        // NEU (UML): Liegt der Mittelpunkt des 12x12-Objekts über einer der dockLines?
+        private static bool AufDockLinie(Beweger objekt)
+        {
+            // TODO: noch nicht implementiert (dockLines wird noch nicht befüllt)
+            throw new NotImplementedException();
+        }
+
+        // NEU (UML): Liegt der Mittelpunkt des 12x12-Objekts über der (ungedrehten) Linie?
+        // Die Linie wird dafür um LinienToleranz in alle Richtungen größer gerechnet.
+        private static bool AufLinie(Beweger objekt, Pose linie, int breite, int hoehe)
+        {
+            Rectangle bereich = new Rectangle(linie.X, linie.Y, breite, hoehe);
+            bereich.Inflate(LinienToleranz, LinienToleranz);
+            return bereich.Contains(objekt.X + 6, objekt.Y + 6);
+        }
+
+        // NEU (UML): Würde der gegriffene Stein noch in seinen Grenzen (BrickBorders) bleiben?
+        public static bool DockobjektInnerhalbGrenzen()
+        {
+            // TODO: noch nicht implementiert
+            throw new NotImplementedException();
         }
 
         public static void DockobjektNachziehen(Point point, double angle)
         {
-            if (dockObjekt == null) return;
+            if (dockobjekt == null) return;
 
-            dockObjekt.X = point.X - 6;
-            dockObjekt.Y = point.Y - 6;
-            dockObjekt.Angle = angle;
+            dockobjekt.X = point.X - 6;
+            dockobjekt.Y = point.Y - 6;
+            dockobjekt.Angle = angle + dockWinkelOffset;
         }
     }
 }

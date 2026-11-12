@@ -29,8 +29,28 @@ public class Parameters
         large,
         small,
     }
-    public const int bricksPerLine = 4;
-    public const int maxRecycleBricks = 4;   // so viele Steine passen auf die Recycle-Linie
+
+    // NEU (UML): Zustand eines Legosteins
+    public enum BrickStatus
+    {
+        onLine,        // liegt auf seiner Produktionslinie (bzw. auf der Recycle-Linie)
+        docked,        // wird vom Roboter gehalten
+        toCustomer,    // fährt auf der Delivery-Linie zum Kunden
+        toRecycling,   // fährt auf der Delivery-Linie zum Recycling
+        atCustomer,    // ist beim Kunden angekommen und wartet auf die Factory
+        atRecycling    // ist beim Recycling angekommen und wartet auf die Factory
+    }
+
+    // NEU (UML): Ergebnis von Factory.Undock()
+    public enum UndockResult
+    {
+        notDocked,           // Roboter hält keinen Stein
+        notOnDeliveryLine,   // Stein ist nicht über der Delivery-Linie
+        toCustomer,          // Stein fährt zum Kunden
+        toRecycling          // Stein fährt zum Recycling
+    }
+
+    public const int bricksPerLine = 4;   // gilt auch für die Plätze auf der Recycle-Linie
     public const double rotationStep = 10;
     public const int timerInterval = 50; // Timer-Intervall in Millisekunden
     public const int step = 3;

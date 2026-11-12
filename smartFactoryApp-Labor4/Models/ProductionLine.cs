@@ -19,8 +19,9 @@ namespace smartFactoryApp.Models
 
         public Point Location => new Point(x, y);
         public double Angle => angle;
-        public Parameters.LegoColor Color { get; }
-        public IReadOnlyList<LegoBrick> Bricks => bricks;
+        // null bei einer Linie ohne eigene Farbe (Recycle-Linie)
+        public Parameters.LegoColor? Color { get; }
+        public List<LegoBrick> Bricks => bricks;
 
         public ProductionLine(Pose pose, Parameters.LegoColor color)
         {
@@ -34,9 +35,14 @@ namespace smartFactoryApp.Models
             : this(new Pose(location.X, location.Y, angle), color)
         {
         }
-        public ProductionLine(Point location, Parameters.LegoColor color)
-            : this(new Pose(location.X, location.Y, 0), color)
+        // Produktionslinie ohne eigene Steine und ohne Bewegung (Recycle-Linie).
+        // Steine kommen erst später von der Factory dazu.
+        public ProductionLine(Pose pose)
         {
+            x = pose.X;
+            y = pose.Y;
+            angle = pose.Angle;
+            Color = null;
         }
 
         // Erzeugt die Legosteine in der Farbe der Linie. Sie liegen nebeneinander
@@ -75,17 +81,8 @@ namespace smartFactoryApp.Models
                 var pose = new Pose((int)Math.Round(brickMitteX - brickSize / 2),
                                     (int)Math.Round(brickMitteY - brickSize / 2),
                                     angle);
-                bricks.Add(new LegoBrick(pose, Color, Parameters.LegoSize.small));
+                bricks.Add(new LegoBrick(pose, Color!.Value, Parameters.LegoSize.small));
             }
-        }
-
-        // Ersetzt den Stein an Position index durch einen neuen Stein derselben Farbe.
-        // Der neue Stein liegt genau dort, wo der alte auf der Linie liegen würde.
-        public void NeuerStein(int index)
-        {
-            LegoBrick alt = bricks[index];
-            var pose = new Pose(alt.Heimat.X, alt.Heimat.Y, alt.HeimatWinkel);
-            bricks[index] = new LegoBrick(pose, Color, alt.Size);
         }
 
         // Wird bei jedem Timer-Takt aufgerufen und bewegt jeden Stein um genau einen Schritt
@@ -107,6 +104,9 @@ namespace smartFactoryApp.Models
             tickCount = (tickCount + 1) % (2 * stepsPerDirection);
 
             Parameters.Direction richtung = outward ? richtungen[k] : richtungen[(k + 4) % 8];
+
+            // Auf der Recycle-Linie (ohne Farbe) bleiben die Steine liegen
+            if (Color == null) richtung = Parameters.Direction.stop;
 
             foreach (LegoBrick brick in bricks)
             {

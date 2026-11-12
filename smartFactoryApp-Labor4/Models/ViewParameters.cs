@@ -49,6 +49,15 @@ public static class ViewParameters
 
     public static Pose RectDeliveryPose = new Pose(150,  38);
     public static Pose RectRecyclePose = new Pose(245,  300);
+
+    // NEU (UML): Pfeile "zum Kunden" (rechts) und "zum Recycling" (links) neben der Delivery-Linie
+    public static Point ToCustomerLinePosition = new Point(455, 38);
+    public const int ToCustomerLineWidth = 100;
+    public const int ToCustomerLineHeight = 60;
+
+    public static Point ToRecycleLinePosition = new Point(45, 38);
+    public const int ToRecycleLineWidth = 100;
+    public const int ToRecycleLineHeight = 60;
 }
 
 /*

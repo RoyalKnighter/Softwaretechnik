@@ -25,27 +25,31 @@
 
             <Grid Height="40" Width="200" Canvas.Left="650" Canvas.Top="10">
                 <TextBox x:Name="RedTextBox" Text="Red" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="RedOrderTextBox" Text="{Binding redOrder}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="RedDeliveredTextBox" Text="{Binding redDelivered}" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="RedOrderTextBox" Text="{Binding RedOrder}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="RedDeliveredTextBox" Text="{Binding RedDelivered}" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
             </Grid>
 
             <Grid Height="40" Width="200" Canvas.Left="650" Canvas.Top="60">
                 <TextBox x:Name="BlueTextBox" Text="Blue" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="BlueOrderTextBox" Text="{Binding blueOrder }" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="BlueDeliveredTextBox" Text="{Binding blueDelivered }" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="BlueOrderTextBox" Text="{Binding BlueOrder}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="BlueDeliveredTextBox" Text="{Binding BlueDelivered}" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
             </Grid>
 
             <Grid Height="40" Width="200" Canvas.Left="650" Canvas.Top="110">
                 <TextBox x:Name="GreenTextBox" Text="Green" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="GreenOrderTextBox" Text="{Binding greenOrder }" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="GreenDeliveredTextBox" Text="{Binding greenDelivered }" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="GreenOrderTextBox" Text="{Binding GreenOrder}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="GreenDeliveredTextBox" Text="{Binding GreenDelivered}" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
             </Grid>
 
             <Grid Height="40" Width="200" Canvas.Left="650" Canvas.Top="160">
                 <TextBox x:Name="YellowTextBox" Text="Yellow" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="YellowOrderTextBox" Text="{Binding yellowOrder }" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
-                <TextBox x:Name="YellowDeliveredTextBox" Text="{Binding yellowDelivered }" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="YellowOrderTextBox" Text="{Binding YellowOrder}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
+                <TextBox x:Name="YellowDeliveredTextBox" Text="{Binding YellowDelivered}" Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" IsReadOnly="True"/>
             </Grid>
+
+            <!-- NEU: Ergebnis des letzten Undock -->
+            <TextBlock Canvas.Left="650" Canvas.Top="215" Width="200" FontSize="13" TextWrapping="Wrap"
+                       Text="{Binding UndockInfo}"/>
 
             <Grid Height="40" Width="120" Canvas.Left="730" Canvas.Top="250">
                 <Button x:Name="StartTimerButton" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Width="55" FontSize="16" Click="StartTimer_Click"/>
@@ -88,22 +92,22 @@
             <!-- Produktionslinien -->
             <Image Source="avares://smartFactoryApp/Assets/LueftungRot.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionRedX}" Canvas.Top="{Binding ProductionRedY}"
-                   Width="100" Height="22" RenderTransformOrigin="50%,50%">
+                   Width="{Binding ProductionLineWidth}" Height="{Binding ProductionLineHeight}" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionRedAngle}"/></Image.RenderTransform>
             </Image>
             <Image Source="avares://smartFactoryApp/Assets/LueftungBlau.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionBlueX}" Canvas.Top="{Binding ProductionBlueY}"
-                   Width="100" Height="22" RenderTransformOrigin="50%,50%">
+                   Width="{Binding ProductionLineWidth}" Height="{Binding ProductionLineHeight}" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionBlueAngle}"/></Image.RenderTransform>
             </Image>
             <Image Source="avares://smartFactoryApp/Assets/LueftungGruen.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionGreenX}" Canvas.Top="{Binding ProductionGreenY}"
-                   Width="100" Height="22" RenderTransformOrigin="50%,50%">
+                   Width="{Binding ProductionLineWidth}" Height="{Binding ProductionLineHeight}" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionGreenAngle}"/></Image.RenderTransform>
             </Image>
             <Image Source="avares://smartFactoryApp/Assets/LueftungGelb.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionYellowX}" Canvas.Top="{Binding ProductionYellowY}"
-                   Width="100" Height="22" RenderTransformOrigin="50%,50%">
+                   Width="{Binding ProductionLineWidth}" Height="{Binding ProductionLineHeight}" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionYellowAngle}"/></Image.RenderTransform>
             </Image>
 
@@ -116,18 +120,18 @@
 
             <Image Source="avares://smartFactoryApp/Assets/LueftungBunt.png" Stretch="Fill"
                    Canvas.Left="{Binding ProductionRecycleX}" Canvas.Top="{Binding ProductionRecycleY}"
-                   Width="100" Height="22" RenderTransformOrigin="50%,50%">
+                   Width="{Binding ProductionLineWidth}" Height="{Binding ProductionLineHeight}" RenderTransformOrigin="50%,50%">
                 <Image.RenderTransform><RotateTransform Angle="{Binding ProductionRecycleAngle}"/></Image.RenderTransform>
             </Image>
 
 
             <Image Source="avares://smartFactoryApp/Assets/customer-arrow.png" Stretch="Fill"
-                   Canvas.Left="455" Canvas.Top="38"
-                   Width="100" Height="60" RenderTransformOrigin="50%,50%" />
+                   Canvas.Left="{Binding ToCustomerX}" Canvas.Top="{Binding ToCustomerY}"
+                   Width="{Binding ToCustomerWidth}" Height="{Binding ToCustomerHeight}" RenderTransformOrigin="50%,50%" />
 
             <Image Source="avares://smartFactoryApp/Assets/recycle-arrow.png" Stretch="Fill"
-                   Canvas.Left="45" Canvas.Top="38"
-                   Width="100" Height="60" RenderTransformOrigin="50%,50%" />
+                   Canvas.Left="{Binding ToRecycleX}" Canvas.Top="{Binding ToRecycleY}"
+                   Width="{Binding ToRecycleWidth}" Height="{Binding ToRecycleHeight}" RenderTransformOrigin="50%,50%" />
 
 
             <!-- Steine auf der Recycle-Linie (max. 4) -->
