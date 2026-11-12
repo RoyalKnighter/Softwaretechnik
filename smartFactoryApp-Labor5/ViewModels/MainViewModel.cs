@@ -296,6 +296,26 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(yellowOrder));
     }
 
+    public void NotifyOrderInfoChanged()
+    {
+        OrderInfo = "Hol einen Brick mit der Farbe " + 
+        factory.orderBrickColor switch
+        {
+            LegoColor.red => "Rot",
+            LegoColor.blue => "Blau",
+            LegoColor.green => "Grün",
+            _ => "Gelb"
+        } + 
+        "von der Produktion Line " +
+        factory.orderFromLine switch
+        {
+            ProductionLineType.productionLineRed => "Rot",
+            ProductionLineType.productionLineBlue => "Blau",
+            ProductionLineType.productionLineGreen => "Grün",
+            _ => "Gelb"
+        };
+    }
+
     private void NotifyLegoBricksPositionChanged()
     {
         // Auf der Recycle-Linie kommen Steine dazu oder fallen weg,
@@ -321,6 +341,7 @@ public partial class MainViewModel : ViewModelBase
     {
         factory.Order();
         NotifyOrderChanged();
+        NotifyOrderInfoChanged();
     }
 
     public void SetUPProductionLines()
