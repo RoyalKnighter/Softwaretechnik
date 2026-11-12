@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection.Metadata;
 using static smartFactoryApp.Models.Parameters;
 
 namespace smartFactoryApp.Models;
@@ -92,5 +93,42 @@ public class Robot : Beweger
         Angle = 0;
         X = 260;
         Y = 120;
+    }
+
+    // Setzt den Roboter vor die Linie, auf die Seite der Bricks, mit dem Greifer zur Linie
+    public void GoToPickUP(ProductionLineType productionLineType)
+    {
+        Pose linie = productionLineType switch
+        {
+            ProductionLineType.productionLineRed => ViewParameters.RectRedPose,
+            ProductionLineType.productionLineBlue => ViewParameters.RectBluePose,
+            ProductionLineType.productionLineGreen => ViewParameters.RectGreenPose,
+            ProductionLineType.productionLineYellow => ViewParameters.RectYellowPose,
+            _ => ViewParameters.RectRecyclePose
+        };
+
+        double w = ViewParameters.ProductionLineWidth;
+        double h = ViewParameters.ProductionLineHeight;
+
+        // Mitte der Linie (um sie wird das Bild gedreht)
+        double mitteX = linie.X + w / 2;
+        double mitteY = linie.Y + h / 2;
+
+        // Richtung quer zur Linie, zur Seite der Bricks (wie in CreateBricks)
+        double rad = linie.Angle * Math.PI / 180;
+        double nx = -Math.Sin(rad);
+        double ny = Math.Cos(rad);
+
+        // Abstand von der Mitte der Linie zur Mitte des Roboters:
+        // dann liegt der Greifpunkt genau auf der Reihe der Bricks
+        double abstand = h / 2 + RobotHeight / 2.0 + 20;
+
+        double roboterMitteX = mitteX + nx * abstand;
+        double roboterMitteY = mitteY + ny * abstand;
+
+        // Gleicher Winkel wie die Linie: dann zeigt der Greifer (Mitte oben) genau zur Linie
+        Angle = linie.Angle;
+        X = (int)Math.Round(roboterMitteX - RobotWidth / 2.0);
+        Y = (int)Math.Round(roboterMitteY - RobotHeight / 2.0);
     }
 }

@@ -26,7 +26,7 @@ public partial class MainViewModel : ViewModelBase
     public int greenDelivered => factory.LegoDelivered[2];
     public int yellowDelivered => factory.LegoDelivered[3];
 
-    [ObservableProperty] private string orderInfo = "Test";
+    [ObservableProperty] private string orderInfo = "Kein offener Auftrag";
 
     // NEU (UML): Text zum Ergebnis des letzten Undock
     [ObservableProperty] private string undockInfo = "";
@@ -263,6 +263,8 @@ public partial class MainViewModel : ViewModelBase
         };
         NotifyRobotPositionChanged();
         NotifyLegoBricksPositionChanged();   // abgelegten Stein auf der Linie anzeigen
+        NotifyOrderChanged();                // Lieferzähler kann sich geändert haben
+        NotifyOrderInfoChanged();            // neuer Auftrag bzw. jetzt von der Recycle-Linie holen
     }
 
     public void ResetRotation()
@@ -294,25 +296,37 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(blueOrder));
         OnPropertyChanged(nameof(greenOrder));
         OnPropertyChanged(nameof(yellowOrder));
+
+        OnPropertyChanged(nameof(redDelivered));
+        OnPropertyChanged(nameof(blueDelivered));
+        OnPropertyChanged(nameof(greenDelivered));
+        OnPropertyChanged(nameof(yellowDelivered));
     }
 
     public void NotifyOrderInfoChanged()
     {
-        OrderInfo = "Hol einen Brick mit der Farbe " + 
+        if (!factory.orderAktiv)
+        {
+            OrderInfo = "Kein offener Auftrag";
+            return;
+        }
+
+        OrderInfo = "Hol einen Brick mit der Farbe " +
         factory.orderBrickColor switch
         {
             LegoColor.red => "Rot",
             LegoColor.blue => "Blau",
             LegoColor.green => "Grün",
             _ => "Gelb"
-        } + 
-        "von der Produktion Line " +
+        } +
+        " von der Produktion Line " +
         factory.orderFromLine switch
         {
             ProductionLineType.productionLineRed => "Rot",
             ProductionLineType.productionLineBlue => "Blau",
             ProductionLineType.productionLineGreen => "Grün",
-            _ => "Gelb"
+            ProductionLineType.productionLineYellow => "Gelb",
+            _ => "Recycle"
         };
     }
 
@@ -352,7 +366,8 @@ public partial class MainViewModel : ViewModelBase
 
     public void GoToPickUP()
     {
-        throw new NotImplementedException();
+        factory.GoToPickUP();
+        NotifyRobotPositionChanged();
     }
 
     public void GoToDelivery()

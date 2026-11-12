@@ -23,11 +23,15 @@ namespace smartFactoryApp.Models
         // null bei einer Linie ohne eigene Farbe (Recycle-Linie)
         public List<LegoBrick> Bricks => bricks;
 
+        // Um welche Linie es sich handelt (rot, blau, grün, gelb oder Recycle)
+        public Parameters.ProductionLineType LineType => productionLineType;
+
         public ProductionLine(Pose pose, Parameters.ProductionLineType productionLineType)
         {
             x = pose.X;
             y = pose.Y;
             angle = pose.Angle;
+            this.productionLineType = productionLineType;
         }
         public ProductionLine(Point location, double angle, Parameters.ProductionLineType productionLineType)
             : this(new Pose(location.X, location.Y, angle), productionLineType)

@@ -13,6 +13,9 @@ public class Factory
     public ProductionLineType orderFromLine;
     public LegoColor orderBrickColor;
 
+    // Gibt es gerade einen Auftrag? Ohne Auftrag kann kein Stein gegriffen werden.
+    public bool orderAktiv = false;
+
     private Robot robot;
     private ProductionLine productionRed;
     private ProductionLine productionBlue;
@@ -91,9 +94,39 @@ public class Factory
     {
         robot.Bewegen(dir);
 
-        if (Beweger.Dockobjekt == null) robot.Kontakt(AlleBricks());
+        // Greifen kann der Roboter nur den bestellten Stein von der bestellten Linie
+        if (Beweger.Dockobjekt == null) robot.Kontakt(BestellteBricks());
 
         Beweger.DockobjektNachziehen(robot.Greifpunkt(), robot.Angle);
+    }
+
+    // Steine, die gerade gegriffen werden dürfen: richtige Farbe auf der richtigen Linie
+    private List<LegoBrick> BestellteBricks()
+    {
+        if (!orderAktiv) return new List<LegoBrick>();
+
+        ProductionLine linie = orderFromLine switch
+        {
+            ProductionLineType.productionLineRed    => productionRed,
+            ProductionLineType.productionLineBlue   => productionBlue,
+            ProductionLineType.productionLineGreen  => productionGreen,
+            ProductionLineType.productionLineYellow => productionYellow,
+            _                                       => productionRecycle
+        };
+
+        return linie.Bricks.Where(b => b.Color == orderBrickColor).ToList();
+    }
+
+    // Index einer Farbe in LegoOrder / LegoDelivered: 0 = rot, 1 = blau, 2 = grün, 3 = gelb
+    private static int OrderIndex(LegoColor farbe)
+    {
+        return farbe switch
+        {
+            LegoColor.red   => 0,
+            LegoColor.blue  => 1,
+            LegoColor.green => 2,
+            _               => 3
+        };
     }
 
     public void LegoBricksBewegen()
@@ -202,11 +235,18 @@ public class Factory
         {
             brick.ZumRecycling(platz, RecyclePlatzPose(platz));
             ergebnis = UndockResult.toRecycling;
+
+            // Derselbe Auftrag geht weiter, der Stein muss jetzt von der Recycle-Linie geholt werden
+            orderFromLine = ProductionLineType.productionLineRecycle;
         }
         else
         {
             brick.ZumKunden();
             ergebnis = UndockResult.toCustomer;
+
+            // Stein ist geliefert: zählen und den nächsten Auftrag erzeugen
+            LegoDelivered[OrderIndex(brick.Color)]++;
+            CreateOrder();
         }
 
         // Den Roboter nach dem Undocken etwas zurückfahren, weg vom abgelegten Stein
@@ -241,8 +281,9 @@ public class Factory
             LegoDelivered[i] = 0;
         }
 
-        // Wie viele Steine gibt es von jeder Farbe insgesamt?
-        List<LegoBrick> alle = AlleBricks();
+        // Wie viele Steine gibt es von jeder Farbe insgesamt auf den Produktionslinien?
+        // (Die Recycle-Linie zählt nicht, weil CreateOrder dort nie einen Stein anfordert.)
+        List<LegoBrick> alle = RedBricks.Concat(BlueBricks).Concat(GreenBricks).Concat(YellowBricks).ToList();
         int[] vorhanden = new int[4];
 
         vorhanden[0] = alle.Count(b => b.Color == LegoColor.red);
@@ -268,18 +309,13 @@ public class Factory
         CreateOrder();
     }
 
-    // Wählt zufällig eine offene Bestellung und eine Linie, auf der ein greifbarer Stein
-    // in dieser Farbe liegt. Setzt am Ende orderBrickColor und orderFromLine.
+    // Wählt zufällig eine offene Bestellung und eine Produktionslinie, auf der ein greifbarer
+    // Stein in dieser Farbe liegt. Die Recycle-Linie wird dabei nie gewählt.
+    // Setzt am Ende orderBrickColor, orderFromLine und orderAktiv.
     public void CreateOrder()
     {
-        var linien = new List<(ProductionLine linie, ProductionLineType typ)>
-    {
-        (productionRed,     ProductionLineType.productionLineRed),
-        (productionBlue,    ProductionLineType.productionLineBlue),
-        (productionGreen,   ProductionLineType.productionLineGreen),
-        (productionYellow,  ProductionLineType.productionLineYellow),
-        (productionRecycle, ProductionLineType.productionLineRecycle)
-    };
+        // Nur die farbigen Produktionslinien, nie die Recycle-Linie
+        var linien = new List<ProductionLine> { productionRed, productionBlue, productionGreen, productionYellow };
 
         // Alle möglichen Kombinationen aus offener Farbe und Linie sammeln
         var moeglich = new List<(LegoColor farbe, ProductionLineType typ)>();
@@ -297,24 +333,28 @@ public class Factory
                 _ => LegoColor.yellow
             };
 
-            foreach (var l in linien)
+            foreach (ProductionLine linie in linien)
             {
-                bool hatStein = l.linie.Bricks.Any(b =>
-                    b.Color == farbe &&
-                    (b.Status == BrickStatus.onLine || b.Status == BrickStatus.atRecycleLine));
+                bool hatStein = linie.Bricks.Any(b => b.Color == farbe && b.Status == BrickStatus.onLine);
 
                 if (hatStein)
-                    moeglich.Add((farbe, l.typ));
+                    moeglich.Add((farbe, linie.LineType));
             }
         }
 
-        if (moeglich.Count == 0) return;   // gerade keine Bestellung erfüllbar
+        // Keine Bestellung erfüllbar (oder alles geliefert): kein Auftrag
+        if (moeglich.Count == 0)
+        {
+            orderAktiv = false;
+            return;
+        }
 
         // Eine Kombination zufällig auswählen und am Ende setzen
         var gewaehlt = moeglich[random.Next(moeglich.Count)];
         orderBrickColor = gewaehlt.farbe;
         orderFromLine = gewaehlt.typ;
+        orderAktiv = true;
     }
 
-
+    public void GoToPickUP() => robot.GoToPickUP(orderFromLine);
 }
