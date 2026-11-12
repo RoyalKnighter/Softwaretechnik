@@ -16,22 +16,20 @@ public partial class MainViewModel : ViewModelBase
     private DispatcherTimer timer;
 
     // Im UML Felder; [ObservableProperty] erzeugt daraus die Eigenschaften RedOrder, RedDelivered usw.
-    [ObservableProperty] private int redOrder;
-    [ObservableProperty] private int blueOrder;
-    [ObservableProperty] private int greenOrder;
-    [ObservableProperty] private int yellowOrder;
+    public int redOrder => factory.LegoOrder[0];
+    public int blueOrder => factory.LegoOrder[1];
+    public int greenOrder => factory.LegoOrder[2];
+    public int yellowOrder => factory.LegoOrder[3];
 
-    [ObservableProperty] private int redDelivered;
-    [ObservableProperty] private int blueDelivered;
-    [ObservableProperty] private int greenDelivered;
-    [ObservableProperty] private int yellowDelivered;
+    public int redDelivered => factory.LegoDelivered[0];
+    public int blueDelivered => factory.LegoDelivered[1];
+    public int greenDelivered => factory.LegoDelivered[2];
+    public int yellowDelivered => factory.LegoDelivered[3];
 
     [ObservableProperty] private string orderInfo = "";
 
     // NEU (UML): Text zum Ergebnis des letzten Undock
     [ObservableProperty] private string undockInfo = "";
-
-    public int Order { get; set; }
 
     // Roboter
     public double RobotX => factory.RobotX;
@@ -100,11 +98,6 @@ public partial class MainViewModel : ViewModelBase
 
         for (int i = 0; i < bricksPerLine; i++)
             RecycleBricks.Add(new LegoBrickViewModel(null));
-
-        RedOrder = factory.LegoOrder[0];
-        BlueOrder = factory.LegoOrder[1];
-        GreenOrder = factory.LegoOrder[2];
-        YellowOrder = factory.LegoOrder[3];
 
         timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
@@ -299,5 +292,26 @@ public partial class MainViewModel : ViewModelBase
             viewModels[i].Brick = i < bricks.Count ? bricks[i] : null;
             viewModels[i].Refresh();
         }
+    }
+
+    public void Order()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetUPProductionLines()
+    {
+        factory.SetUPProductionLines();
+        NotifyLegoBricksPositionChanged();
+    }
+    
+    public void GoToPickUP()
+    {
+        throw new NotImplementedException();
+    }
+    
+    public void GoToDelivery()
+    {
+        throw new NotImplementedException();
     }
 }

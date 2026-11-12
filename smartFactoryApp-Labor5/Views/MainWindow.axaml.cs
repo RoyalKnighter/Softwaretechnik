@@ -31,6 +31,19 @@ public partial class MainWindow : Window
 
     private void StartTimer_Click(object sender, RoutedEventArgs e) => ViewModel?.StartTimer();
     private void StopTimer_Click(object sender, RoutedEventArgs e) => ViewModel?.StopTimer();
-    
+
     private void UndockButton_Click(object sender, RoutedEventArgs e) => ViewModel?.Undock();
+
+    private void SetUPProductionLinesButton_Click(object sender, RoutedEventArgs e)
+    {
+        SetUPProductionLinesButton.IsEnabled = false;
+        ViewModel?.SetUPProductionLines();
+    }
+    private void GoToPickUPButton_Click(object sender, RoutedEventArgs e) => ViewModel?.GoToPickUP();
+    private void GoToDeliveryButton_Click(object sender, RoutedEventArgs e) => ViewModel?.GoToDelivery();
+    private void OrderButton_Click(object sender, RoutedEventArgs e)
+    {
+        OrderButton.IsEnabled = false;
+        ViewModel?.Order();
+    }
 }

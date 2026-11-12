@@ -29,7 +29,6 @@ namespace smartFactoryApp.Models
             y = pose.Y;
             angle = pose.Angle;
             Color = color;
-            CreateBricks();
         }
         public ProductionLine(Point location, double angle, Parameters.LegoColor color)
             : this(new Pose(location.X, location.Y, angle), color)
@@ -47,7 +46,7 @@ namespace smartFactoryApp.Models
 
         // Erzeugt die Legosteine in der Farbe der Linie. Sie liegen nebeneinander
         // entlang der Linie, direkt neben ihrer Innenseite, und sind genauso gedreht wie die Linie.
-        private void CreateBricks()
+        public void CreateBricks()
         {
             const double brickSize = 12;
             int count = Parameters.bricksPerLine;

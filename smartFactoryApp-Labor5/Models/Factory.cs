@@ -42,6 +42,7 @@ public class Factory
 
     // Im UML eine Eigenschaft (vorher ein öffentliches Feld)
     public List<int> LegoOrder { get; } = new List<int>();
+    public List<int> LegoDelivered { get; } = new List<int>();
 
     // Legosteine je Farbe
     public List<LegoBrick> RedBricks => productionRed.Bricks;
@@ -201,5 +202,13 @@ public class Factory
             robot.Bewegen(Direction.down);
 
         return ergebnis;
+    }
+
+    public void SetUPProductionLines()
+    {
+        productionRed.CreateBricks();
+        productionBlue.CreateBricks();
+        productionGreen.CreateBricks();
+        productionYellow.CreateBricks();
     }
 }
