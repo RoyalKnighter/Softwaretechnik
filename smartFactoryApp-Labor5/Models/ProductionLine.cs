@@ -19,17 +19,8 @@ namespace smartFactoryApp.Models
 
         public Point Location => new Point(x, y);
         public double Angle => angle;
-        public Parameters.LegoColor Color { get; }
         public List<LegoBrick> Bricks => bricks;
 
-        public ProductionLine(Pose pose, Parameters.LegoColor color)
-        {
-            x = pose.X;
-            y = pose.Y;
-            angle = pose.Angle;
-            Color = color;
-            CreateBricks();
-        }
         public ProductionLine(Pose pose)
         {
             x = pose.X;
@@ -37,9 +28,21 @@ namespace smartFactoryApp.Models
             angle = pose.Angle;
         }
 
-        // Erzeugt die Legosteine in der Farbe der Linie. Sie liegen nebeneinander
-        // entlang der Linie, direkt neben ihrer Innenseite, und sind genauso gedreht wie die Linie.
-        private void CreateBricks()
+        // Erzeugt die Legosteine in der Farbe der Linie, einen auf jedem Platz
+        public void CreateBricks()
+        {
+            Random rnd = new Random();
+
+            for (int i = 0; i < Parameters.bricksPerLine; i++)
+            {
+                bricks.Add(new LegoBrick(PlatzPose(i), Parameters.LegoColor.blue, Parameters.LegoSize.small));
+            }
+        }
+
+        // Position des Platzes Nummer "platz" auf dieser Linie (ohne die Pendelbewegung).
+        // Die Plätze liegen nebeneinander entlang der Linie, direkt neben ihrer Innenseite,
+        // und sind genauso gedreht wie die Linie.
+        private Pose PlatzPose(int platz)
         {
             const double brickSize = 12;
             int count = Parameters.bricksPerLine;
@@ -56,35 +59,73 @@ namespace smartFactoryApp.Models
             double nx = -uy, ny = ux;
 
             // So weit fahren die Steine in 10 Takten (schräg ist ein Schritt √2 mal länger)
-            int k = (int)Math.Round(((angle % 360) + 360) % 360 / 45) % 8;
+            int k = RichtungsIndex();
             double schrittLaenge = (k % 2 == 1) ? Parameters.step * Math.Sqrt(2) : Parameters.step;
             double fahrweg = stepsPerDirection * schrittLaenge;
 
-            // Steine so verteilen, dass sie auch am Ende des Fahrwegs noch auf der Linie liegen
+            // Plätze so verteilen, dass die Steine auch am Ende des Fahrwegs noch auf der Linie liegen
             double abstand = (w - fahrweg) / count;
             double seitlich = h / 2 + brickSize / 2 + 3;
 
-            for (int i = 0; i < count; i++)
-            {
-                double t = -w / 2 + abstand / 2 + i * abstand;
-                double brickMitteX = mitteX + ux * t + nx * seitlich;
-                double brickMitteY = mitteY + uy * t + ny * seitlich;
+            double t = -w / 2 + abstand / 2 + platz * abstand;
+            double brickMitteX = mitteX + ux * t + nx * seitlich;
+            double brickMitteY = mitteY + uy * t + ny * seitlich;
 
-                var pose = new Pose((int)Math.Round(brickMitteX - brickSize / 2),
-                                    (int)Math.Round(brickMitteY - brickSize / 2),
-                                    angle);
-                bricks.Add(new LegoBrick(pose, Color, Parameters.LegoSize.small));
+            return new Pose((int)Math.Round(brickMitteX - brickSize / 2),
+                            (int)Math.Round(brickMitteY - brickSize / 2),
+                            angle);
+        }
+
+        // Legt einen Stein auf den nächsten freien Platz dieser Linie (z. B. auf der Recycle-Linie).
+        // Gibt false zurück, wenn kein Platz mehr frei ist.
+        public bool SteinAblegen(LegoBrick brick)
+        {
+            var (vx, vy) = Verschiebung();
+
+            for (int platz = 0; platz < Parameters.bricksPerLine; platz++)
+            {
+                // Wo dieser Platz gerade liegt, inklusive Pendelbewegung
+                Pose p = PlatzPose(platz);
+                int px = p.X + vx;
+                int py = p.Y + vy;
+
+                bool belegt = bricks.Exists(b => Math.Abs(b.Heimat.X - px) <= 2 &&
+                                                 Math.Abs(b.Heimat.Y - py) <= 2);
+                if (belegt) continue;
+
+                brick.NeueHeimat(new Pose(px, py, angle));
+                bricks.Add(brick);
+                return true;
             }
+            return false;
+        }
+
+        // Wie weit die Steine gerade von ihrer Startposition weggependelt sind
+        private (int dx, int dy) Verschiebung()
+        {
+            (int x, int y)[] einheit = { (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1) };
+            int k = RichtungsIndex();
+
+            // Schritte nach außen: steigt in den ersten 10 Takten bis 10, fällt dann wieder auf 0
+            int schritte = tickCount <= stepsPerDirection ? tickCount : 2 * stepsPerDirection - tickCount;
+
+            return (einheit[k].x * schritte * Parameters.step, einheit[k].y * schritte * Parameters.step);
+        }
+
+        // Linienwinkel auf die nächste der 8 Richtungen runden (0° = rechts, 45° = rechts unten, ...)
+        private int RichtungsIndex()
+        {
+            return (int)Math.Round(((angle % 360) + 360) % 360 / 45) % 8;
         }
 
         // Ersetzt den Stein an Position index durch einen neuen Stein derselben Farbe.
         // Der neue Stein liegt genau dort, wo der alte auf der Linie liegen würde.
-        public void NeuerStein(int index)
+        /*public void NeuerStein(int index)
         {
             LegoBrick alt = bricks[index];
             var pose = new Pose(alt.Heimat.X, alt.Heimat.Y, alt.HeimatWinkel);
             bricks[index] = new LegoBrick(pose, Color, alt.Size);
-        }
+        }*/
 
         // Wird bei jedem Timer-Takt aufgerufen und bewegt jeden Stein um genau einen Schritt
         // entlang der Linie: 10 Takte hin, 10 Takte zurück
@@ -98,8 +139,7 @@ namespace smartFactoryApp.Models
                 Parameters.Direction.up,      Parameters.Direction.upRight
             };
 
-            // Linienwinkel auf die nächste der 8 Richtungen runden (0° = rechts, 45° = rechts unten, ...)
-            int k = (int)Math.Round(((angle % 360) + 360) % 360 / 45) % 8;
+            int k = RichtungsIndex();
 
             bool outward = tickCount < stepsPerDirection;
             tickCount = (tickCount + 1) % (2 * stepsPerDirection);

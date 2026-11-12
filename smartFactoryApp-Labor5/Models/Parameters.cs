@@ -19,10 +19,10 @@ public class Parameters
     }
     public enum LegoColor
     {
-        yellow,
-        blue,
-        red,
-        green,
+        yellow = 0,
+        blue = 1,
+        red = 2,
+        green = 3,
     }
     public enum LegoSize
     {

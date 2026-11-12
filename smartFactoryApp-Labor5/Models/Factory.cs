@@ -46,11 +46,11 @@ public class Factory
     {
         robot = new Robot(RobotPose.Location, Borders);
 
-        productionRed    = new ProductionLine(RectRedPose,    LegoColor.red);
-        productionBlue   = new ProductionLine(RectBluePose,   LegoColor.blue);
-        productionGreen  = new ProductionLine(RectGreenPose,  LegoColor.green);
-        productionYellow = new ProductionLine(RectYellowPose, LegoColor.yellow);
-        productionRecycle = new ProductionLine(RectYellowPose);
+        productionRed    = new ProductionLine(RectRedPose);
+        productionBlue   = new ProductionLine(RectBluePose);
+        productionGreen  = new ProductionLine(RectGreenPose);
+        productionYellow = new ProductionLine(RectYellowPose);
+        productionRecycle = new ProductionLine(RectRecyclePose);
 
         LegoOrder.Add(0);
         LegoOrder.Add(0);
@@ -93,7 +93,16 @@ public class Factory
         LegoBrick? brick = Beweger.Undock();
         if (brick == null) return;
 
-        bool platzFrei = RecycleBricks.Count < 4;
+        // Mit 50 % Wahrscheinlichkeit zum Recycling, aber nur, wenn auf der
+        // Recycle-Linie noch Platz ist. Steine, die gerade zum Recycling unterwegs sind, zählen mit.
+        int unterwegs = RedBricks.Concat(BlueBricks).Concat(GreenBricks).Concat(YellowBricks)
+                                 .Count(b => b.Ausgeliefert && !b.ZumKunden);
+        int belegt = RecycleBricks.Count + unterwegs;
+
+        // Kommt der Stein selbst von der Recycle-Linie, wird sein Platz dort gleich frei
+        if (RecycleBricks.Contains(brick)) belegt--;
+
+        bool platzFrei = belegt < maxRecycleBricks;
 
         brick.ZumKunden = !platzFrei || rnd.Next(2) == 0;
 
@@ -104,43 +113,25 @@ public class Factory
 
     // Steine, die am Ende der Delivery-Linie angekommen sind, werden abgeholt:
     // Zum Kunden -> verschwindet, zum Recycling -> kommt auf die Recycle-Linie.
-    // In beiden Fällen bekommt die Produktionslinie einen neuen Stein.
+    // Kommt der Stein von einer farbigen Linie, bekommt sie einen neuen Stein.
+    // Kommt er von der Recycle-Linie, wird er dort nur entfernt.
     private void AngekommeneSteineAbholen(ProductionLine linie)
     {
-        for (int i = 0; i < linie.Bricks.Count; i++)
+        // Rückwärts, weil Steine aus der Liste entfernt werden können
+        for (int i = linie.Bricks.Count - 1; i >= 0; i--)
         {
             LegoBrick brick = linie.Bricks[i];
             if (!brick.AmZiel) continue;
 
+            if (linie == productionRecycle)
+                linie.Bricks.RemoveAt(i);
+            else
+                brick.Location = brick.Heimat;
+                //linie.NeuerStein(i);     // muss vor SteinAblegen kommen, weil es die alte Heimat braucht
+
             if (!brick.ZumKunden)
-                AufRecycleLinieLegen(brick);
-
-            linie.NeuerStein(i);
+                productionRecycle.SteinAblegen(brick);
         }
-    }
-
-    // Legt den Stein auf den nächsten freien Platz der Recycle-Linie
-    private void AufRecycleLinieLegen(LegoBrick brick)
-    {
-        int platz = RecycleBricks.Count;
-        double w = ProductionLineWidth;
-        double h = ProductionLineHeight;
-
-        // Mitte der Recycle-Linie und Richtung entlang der Linie
-        double mitteX = RectRecyclePose.X + w / 2;
-        double mitteY = RectRecyclePose.Y + h / 2 - 20;
-        double rad = RectRecyclePose.Angle * Math.PI / 180;
-
-        // Die Linie in gleich große Plätze aufteilen, der Stein kommt in die Mitte seines Platzes
-        double t = -w / 2 + (platz + 0.5) * w / maxRecycleBricks;
-
-        brick.X = (int)Math.Round(mitteX + Math.Cos(rad) * t - 6);
-        brick.Y = (int)Math.Round(mitteY + Math.Sin(rad) * t - 6);
-        brick.Angle = RectRecyclePose.Angle;
-        brick.Ausgeliefert = false;
-        brick.AmZiel = false;
-
-        RecycleBricks.Add(brick);
     }
 
     public void Order()
@@ -153,5 +144,13 @@ public class Factory
     {
         robot.GoToDelivery();
         Beweger.DockobjektNachziehen(robot.GreifPunkt(), robot.Angle);
+    }
+
+    public void SetUPProductionLines()
+    {
+        productionRed.CreateBricks();
+        productionBlue.CreateBricks();
+        productionGreen.CreateBricks();
+        productionYellow.CreateBricks();
     }
 }

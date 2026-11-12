@@ -293,7 +293,8 @@ public partial class MainViewModel : ViewModelBase
 
     public void SetUPProductionLines()
     {
-        throw new NotImplementedException();
+        factory.SetUPProductionLines();
+        NotifyLegoBricksPositionChanged();
     }
 
     public void GoToPickUP()

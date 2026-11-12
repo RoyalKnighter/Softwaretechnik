@@ -9,7 +9,7 @@ namespace smartFactoryApp.Models
         private bool ausgeliefert = false;
 
         private Point heimat;
-        private readonly double heimatWinkel;
+        private double heimatWinkel;
 
         public bool Gedockt { get { return gedockt; } set { gedockt = value; } }
         public bool Ausgeliefert { get => ausgeliefert; set => ausgeliefert = value; }
@@ -33,6 +33,20 @@ namespace smartFactoryApp.Models
             Size = size;
             heimat = pose.Location;
             heimatWinkel = pose.Angle;
+        }
+
+        // Legt den Stein auf einen neuen Platz, z. B. auf der Recycle-Linie.
+        // Ab dann pendelt er mit dieser Linie mit.
+        public void NeueHeimat(Pose pose)
+        {
+            heimat = pose.Location;
+            heimatWinkel = pose.Angle;
+            Location = heimat;
+            Angle = heimatWinkel;
+
+            Ausgeliefert = false;
+            AmZiel = false;
+            ZumKunden = true;
         }
 
         public override string ToString()

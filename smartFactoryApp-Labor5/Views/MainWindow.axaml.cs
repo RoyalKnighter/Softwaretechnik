@@ -34,7 +34,11 @@ public partial class MainWindow : Window
 
     private void UndockButton_Click(object sender, RoutedEventArgs e) => ViewModel?.Undock();
 
-    private void SetUPProductionLinesButton_Click(object sender, RoutedEventArgs e) => ViewModel?.SetUPProductionLines();
+    private void SetUPProductionLinesButton_Click(object sender, RoutedEventArgs e)
+    {
+        SetUPProductionLinesButton.IsEnabled = false;
+        ViewModel?.SetUPProductionLines();
+    }
     private void GoToPickUPButton_Click(object sender, RoutedEventArgs e) => ViewModel?.GoToPickUP();
     private void GoToDeliveryButton_Click(object sender, RoutedEventArgs e) => ViewModel?.GoToDelivery();
     private void OrderButton_Click(object sender, RoutedEventArgs e)
