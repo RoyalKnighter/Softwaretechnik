@@ -283,7 +283,7 @@ namespace smartFactoryApp.Models
             foreach (LegoBrick brick in bricks)
             {
                 // Nur Steine, die auf einer Linie liegen, können gegriffen werden
-                if (brick.Status != BrickStatus.onLine) continue;
+                if (brick.Status != BrickStatus.onLine && brick.Status != BrickStatus.atRecycleLine) continue;
 
                 int x = brick.X;
                 int y = brick.Y;
@@ -325,13 +325,6 @@ namespace smartFactoryApp.Models
                             ViewParameters.ProductionDeliveryWidth, ViewParameters.ProductionDeliveryHeight);
         }
 
-        // NEU (UML): Liegt der Mittelpunkt des 12x12-Objekts über einer der dockLines?
-        private static bool AufDockLinie(Beweger objekt)
-        {
-            // TODO: noch nicht implementiert (dockLines wird noch nicht befüllt)
-            throw new NotImplementedException();
-        }
-
         // NEU (UML): Liegt der Mittelpunkt des 12x12-Objekts über der (ungedrehten) Linie?
         // Die Linie wird dafür um LinienToleranz in alle Richtungen größer gerechnet.
         private static bool AufLinie(Beweger objekt, Pose linie, int breite, int hoehe)
@@ -339,13 +332,6 @@ namespace smartFactoryApp.Models
             Rectangle bereich = new Rectangle(linie.X, linie.Y, breite, hoehe);
             bereich.Inflate(LinienToleranz, LinienToleranz);
             return bereich.Contains(objekt.X + 6, objekt.Y + 6);
-        }
-
-        // NEU (UML): Würde der gegriffene Stein noch in seinen Grenzen (BrickBorders) bleiben?
-        public static bool DockobjektInnerhalbGrenzen()
-        {
-            // TODO: noch nicht implementiert
-            throw new NotImplementedException();
         }
 
         public static void DockobjektNachziehen(Point point, double angle)

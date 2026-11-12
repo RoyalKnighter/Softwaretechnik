@@ -91,13 +91,19 @@ public partial class MainViewModel : ViewModelBase
     {
         factory = new Factory();
 
-        RedBricks = factory.RedBricks.Select(b => new LegoBrickViewModel(b)).ToList();
-        BlueBricks = factory.BlueBricks.Select(b => new LegoBrickViewModel(b)).ToList();
-        GreenBricks = factory.GreenBricks.Select(b => new LegoBrickViewModel(b)).ToList();
-        YellowBricks = factory.YellowBricks.Select(b => new LegoBrickViewModel(b)).ToList();
+        RedBricks = new List<LegoBrickViewModel>();
+        BlueBricks = new List<LegoBrickViewModel>();
+        GreenBricks = new List<LegoBrickViewModel>();
+        YellowBricks = new List<LegoBrickViewModel>();
 
         for (int i = 0; i < bricksPerLine; i++)
+        {
+            RedBricks.Add(new LegoBrickViewModel(null));
+            BlueBricks.Add(new LegoBrickViewModel(null));
+            GreenBricks.Add(new LegoBrickViewModel(null));
+            YellowBricks.Add(new LegoBrickViewModel(null));
             RecycleBricks.Add(new LegoBrickViewModel(null));
+        }
 
         timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
@@ -134,9 +140,10 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.up;
         }
     }
-    public void MoveDown() {
+    public void MoveDown()
+    {
         if (IsStepMode)
-            {
+        {
             factory.RobotBewegen(Direction.down);
             NotifyRobotPositionChanged();
         }
@@ -145,7 +152,8 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.down;
         }
     }
-    public void MoveLeft() {
+    public void MoveLeft()
+    {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.left);
@@ -156,7 +164,8 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.left;
         }
     }
-    public void MoveRight() {
+    public void MoveRight()
+    {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.right);
@@ -167,7 +176,8 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.right;
         }
     }
-    public void MoveUpLeft() {
+    public void MoveUpLeft()
+    {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.upLeft);
@@ -178,7 +188,8 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.upLeft;
         }
     }
-    public void MoveUpRight() {
+    public void MoveUpRight()
+    {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.upRight);
@@ -189,7 +200,8 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.upRight;
         }
     }
-    public void MoveDownLeft() {
+    public void MoveDownLeft()
+    {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.downLeft);
@@ -200,7 +212,8 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.downLeft;
         }
     }
-    public void MoveDownRight() {
+    public void MoveDownRight()
+    {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.downRight);
@@ -213,7 +226,8 @@ public partial class MainViewModel : ViewModelBase
     }
 
     // Roboter drehen
-    public void MoveRotateLeft() {
+    public void MoveRotateLeft()
+    {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.turnLeft);
@@ -224,7 +238,8 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.turnLeft;
         }
     }
-    public void MoveRotateRight() {
+    public void MoveRotateRight()
+    {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.turnRight);
@@ -240,11 +255,11 @@ public partial class MainViewModel : ViewModelBase
     {
         UndockInfo = factory.Undock() switch
         {
-            UndockResult.notDocked         => "Kein Stein gegriffen",
+            UndockResult.notDocked => "Kein Stein gegriffen",
             UndockResult.notOnDeliveryLine => "Nicht über der Delivery-Linie",
-            UndockResult.toCustomer        => "Stein fährt zum Kunden",
-            UndockResult.toRecycling       => "Stein fährt zum Recycling",
-            _                              => ""
+            UndockResult.toCustomer => "Stein fährt zum Kunden",
+            UndockResult.toRecycling => "Stein fährt zum Recycling",
+            _ => ""
         };
         NotifyRobotPositionChanged();
         NotifyLegoBricksPositionChanged();   // abgelegten Stein auf der Linie anzeigen
@@ -277,9 +292,9 @@ public partial class MainViewModel : ViewModelBase
     {
         // Auf der Recycle-Linie kommen Steine dazu oder fallen weg,
         // deshalb vor dem Aktualisieren den aktuellen Stein aus der Factory übernehmen
-        Abgleichen(RedBricks,    factory.RedBricks);
-        Abgleichen(BlueBricks,   factory.BlueBricks);
-        Abgleichen(GreenBricks,  factory.GreenBricks);
+        Abgleichen(RedBricks, factory.RedBricks);
+        Abgleichen(BlueBricks, factory.BlueBricks);
+        Abgleichen(GreenBricks, factory.GreenBricks);
         Abgleichen(YellowBricks, factory.YellowBricks);
         Abgleichen(RecycleBricks, factory.RecycleBricks);
     }
@@ -304,12 +319,12 @@ public partial class MainViewModel : ViewModelBase
         factory.SetUPProductionLines();
         NotifyLegoBricksPositionChanged();
     }
-    
+
     public void GoToPickUP()
     {
         throw new NotImplementedException();
     }
-    
+
     public void GoToDelivery()
     {
         throw new NotImplementedException();

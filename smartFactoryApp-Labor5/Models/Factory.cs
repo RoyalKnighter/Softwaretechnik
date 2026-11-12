@@ -57,16 +57,21 @@ public class Factory
     {
         robot = new Robot(RobotPose.Location, Borders);
 
-        productionRed     = new ProductionLine(RectRedPose,    LegoColor.red);
-        productionBlue    = new ProductionLine(RectBluePose,   LegoColor.blue);
-        productionGreen   = new ProductionLine(RectGreenPose,  LegoColor.green);
-        productionYellow  = new ProductionLine(RectYellowPose, LegoColor.yellow);
+        productionRed     = new ProductionLine(RectRedPose);
+        productionBlue    = new ProductionLine(RectBluePose);
+        productionGreen   = new ProductionLine(RectGreenPose);
+        productionYellow  = new ProductionLine(RectYellowPose);
         productionRecycle = new ProductionLine(RectRecyclePose);
 
         LegoOrder.Add(0);
         LegoOrder.Add(0);
         LegoOrder.Add(0);
         LegoOrder.Add(0);
+        
+        LegoDelivered.Add(0);
+        LegoDelivered.Add(0);
+        LegoDelivered.Add(0);
+        LegoDelivered.Add(0);
     }
 
     // NEU (UML): alle Steine auf allen Linien, inklusive Recycle-Linie
@@ -120,6 +125,7 @@ public class Factory
                     // Neuer Stein in derselben Farbe auf den reservierten Platz der Recycle-Linie
                     var neu = new LegoBrick(RecyclePlatzPose(brick.RecyclePlatz), brick.Color, brick.Size);
                     neu.RecyclePlatz = brick.RecyclePlatz;
+                    neu.Status = BrickStatus.atRecycleLine;
                     RecycleBricks.Add(neu);
 
                     brick.RecyclePlatz = -1;

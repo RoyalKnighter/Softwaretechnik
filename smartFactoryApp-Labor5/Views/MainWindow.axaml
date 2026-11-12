@@ -212,68 +212,68 @@
             </Rectangle>
 
             <!-- Legosteine -->
-            <Rectangle Width="12" Height="12" Fill="Red" Stroke="Black"
-                       Canvas.Left="{Binding RedBricks[0].X}" Canvas.Top="{Binding RedBricks[0].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding RedBricks[0].Sichtbar}"
+                       Fill="{Binding RedBricks[0].Farbe}" Canvas.Left="{Binding RedBricks[0].X}" Canvas.Top="{Binding RedBricks[0].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding RedBricks[0].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Red" Stroke="Black"
-                       Canvas.Left="{Binding RedBricks[1].X}" Canvas.Top="{Binding RedBricks[1].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding RedBricks[2].Sichtbar}"
+                       Fill="{Binding RedBricks[1].Farbe}" Canvas.Left="{Binding RedBricks[1].X}" Canvas.Top="{Binding RedBricks[1].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding RedBricks[1].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Red" Stroke="Black"
-                       Canvas.Left="{Binding RedBricks[2].X}" Canvas.Top="{Binding RedBricks[2].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding RedBricks[2].Sichtbar}"
+                       Fill="{Binding RedBricks[2].Farbe}" Canvas.Left="{Binding RedBricks[2].X}" Canvas.Top="{Binding RedBricks[2].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding RedBricks[2].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Red" Stroke="Black"
-                       Canvas.Left="{Binding RedBricks[3].X}" Canvas.Top="{Binding RedBricks[3].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding RedBricks[3].Sichtbar}"
+                       Fill="{Binding RedBricks[3].Farbe}" Canvas.Left="{Binding RedBricks[3].X}" Canvas.Top="{Binding RedBricks[3].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding RedBricks[3].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Blue" Stroke="Black"
-                       Canvas.Left="{Binding BlueBricks[0].X}" Canvas.Top="{Binding BlueBricks[0].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding BlueBricks[0].Sichtbar}"
+                       Fill="{Binding BlueBricks[0].Farbe}" Canvas.Left="{Binding BlueBricks[0].X}" Canvas.Top="{Binding BlueBricks[0].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding BlueBricks[0].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Blue" Stroke="Black"
-                       Canvas.Left="{Binding BlueBricks[1].X}" Canvas.Top="{Binding BlueBricks[1].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding BlueBricks[2].Sichtbar}"
+                       Fill="{Binding BlueBricks[1].Farbe}" Canvas.Left="{Binding BlueBricks[1].X}" Canvas.Top="{Binding BlueBricks[1].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding BlueBricks[1].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Blue" Stroke="Black"
-                       Canvas.Left="{Binding BlueBricks[2].X}" Canvas.Top="{Binding BlueBricks[2].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding BlueBricks[2].Sichtbar}"
+                       Fill="{Binding BlueBricks[2].Farbe}" Canvas.Left="{Binding BlueBricks[2].X}" Canvas.Top="{Binding BlueBricks[2].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding BlueBricks[2].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Blue" Stroke="Black"
-                       Canvas.Left="{Binding BlueBricks[3].X}" Canvas.Top="{Binding BlueBricks[3].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding BlueBricks[3].Sichtbar}"
+                       Fill="{Binding BlueBricks[3].Farbe}" Canvas.Left="{Binding BlueBricks[3].X}" Canvas.Top="{Binding BlueBricks[3].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding BlueBricks[3].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Green" Stroke="Black"
-                       Canvas.Left="{Binding GreenBricks[0].X}" Canvas.Top="{Binding GreenBricks[0].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding GreenBricks[0].Sichtbar}"
+                       Fill="{Binding GreenBricks[0].Farbe}" Canvas.Left="{Binding GreenBricks[0].X}" Canvas.Top="{Binding GreenBricks[0].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding GreenBricks[0].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Green" Stroke="Black"
-                       Canvas.Left="{Binding GreenBricks[1].X}" Canvas.Top="{Binding GreenBricks[1].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding GreenBricks[2].Sichtbar}"
+                       Fill="{Binding GreenBricks[1].Farbe}" Canvas.Left="{Binding GreenBricks[1].X}" Canvas.Top="{Binding GreenBricks[1].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding GreenBricks[1].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Green" Stroke="Black"
-                       Canvas.Left="{Binding GreenBricks[2].X}" Canvas.Top="{Binding GreenBricks[2].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding GreenBricks[2].Sichtbar}"
+                       Fill="{Binding GreenBricks[2].Farbe}" Canvas.Left="{Binding GreenBricks[2].X}" Canvas.Top="{Binding GreenBricks[2].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding GreenBricks[2].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Green" Stroke="Black"
-                       Canvas.Left="{Binding GreenBricks[3].X}" Canvas.Top="{Binding GreenBricks[3].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding GreenBricks[3].Sichtbar}"
+                       Fill="{Binding GreenBricks[3].Farbe}" Canvas.Left="{Binding GreenBricks[3].X}" Canvas.Top="{Binding GreenBricks[3].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding GreenBricks[3].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Yellow" Stroke="Black"
-                       Canvas.Left="{Binding YellowBricks[0].X}" Canvas.Top="{Binding YellowBricks[0].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding YellowBricks[0].Sichtbar}"
+                       Fill="{Binding YellowBricks[0].Farbe}" Canvas.Left="{Binding YellowBricks[0].X}" Canvas.Top="{Binding YellowBricks[0].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding YellowBricks[0].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Yellow" Stroke="Black"
-                       Canvas.Left="{Binding YellowBricks[1].X}" Canvas.Top="{Binding YellowBricks[1].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding YellowBricks[2].Sichtbar}"
+                       Fill="{Binding YellowBricks[1].Farbe}" Canvas.Left="{Binding YellowBricks[1].X}" Canvas.Top="{Binding YellowBricks[1].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding YellowBricks[1].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Yellow" Stroke="Black"
-                       Canvas.Left="{Binding YellowBricks[2].X}" Canvas.Top="{Binding YellowBricks[2].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding YellowBricks[2].Sichtbar}"
+                       Fill="{Binding YellowBricks[2].Farbe}" Canvas.Left="{Binding YellowBricks[2].X}" Canvas.Top="{Binding YellowBricks[2].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding YellowBricks[2].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Width="12" Height="12" Fill="Yellow" Stroke="Black"
-                       Canvas.Left="{Binding YellowBricks[3].X}" Canvas.Top="{Binding YellowBricks[3].Y}">
+            <Rectangle Width="12" Height="12" Stroke="Black" IsVisible="{Binding YellowBricks[3].Sichtbar}"
+                       Fill="{Binding YellowBricks[3].Farbe}" Canvas.Left="{Binding YellowBricks[3].X}" Canvas.Top="{Binding YellowBricks[3].Y}">
                 <Rectangle.RenderTransform><RotateTransform Angle="{Binding YellowBricks[3].Angle}"/></Rectangle.RenderTransform>
             </Rectangle>
 

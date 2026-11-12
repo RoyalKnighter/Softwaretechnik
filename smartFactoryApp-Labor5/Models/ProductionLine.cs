@@ -20,28 +20,17 @@ namespace smartFactoryApp.Models
         public Point Location => new Point(x, y);
         public double Angle => angle;
         // null bei einer Linie ohne eigene Farbe (Recycle-Linie)
-        public Parameters.LegoColor? Color { get; }
         public List<LegoBrick> Bricks => bricks;
 
-        public ProductionLine(Pose pose, Parameters.LegoColor color)
-        {
-            x = pose.X;
-            y = pose.Y;
-            angle = pose.Angle;
-            Color = color;
-        }
-        public ProductionLine(Point location, double angle, Parameters.LegoColor color)
-            : this(new Pose(location.X, location.Y, angle), color)
-        {
-        }
-        // Produktionslinie ohne eigene Steine und ohne Bewegung (Recycle-Linie).
-        // Steine kommen erst später von der Factory dazu.
         public ProductionLine(Pose pose)
         {
             x = pose.X;
             y = pose.Y;
             angle = pose.Angle;
-            Color = null;
+        }
+        public ProductionLine(Point location, double angle)
+            : this(new Pose(location.X, location.Y, angle))
+        {
         }
 
         // Erzeugt die Legosteine in der Farbe der Linie. Sie liegen nebeneinander
@@ -71,8 +60,18 @@ namespace smartFactoryApp.Models
             double abstand = (w - fahrweg) / count;
             double seitlich = h / 2 + brickSize / 2 + 3;
 
+            Random rnd = new Random();
+
             for (int i = 0; i < count; i++)
             {
+                Parameters.LegoColor color = rnd.Next(4) switch
+                {
+                    1 => Parameters.LegoColor.red,
+                    2 => Parameters.LegoColor.blue,
+                    3 => Parameters.LegoColor.green,
+                    _ => Parameters.LegoColor.yellow
+                };
+
                 double t = -w / 2 + abstand / 2 + i * abstand;
                 double brickMitteX = mitteX + ux * t + nx * seitlich;
                 double brickMitteY = mitteY + uy * t + ny * seitlich;
@@ -80,7 +79,8 @@ namespace smartFactoryApp.Models
                 var pose = new Pose((int)Math.Round(brickMitteX - brickSize / 2),
                                     (int)Math.Round(brickMitteY - brickSize / 2),
                                     angle);
-                bricks.Add(new LegoBrick(pose, Color!.Value, Parameters.LegoSize.small));
+
+                bricks.Add(new LegoBrick(pose, color, Parameters.LegoSize.small));
             }
         }
 
@@ -104,12 +104,12 @@ namespace smartFactoryApp.Models
 
             Parameters.Direction richtung = outward ? richtungen[k] : richtungen[(k + 4) % 8];
 
-            // Auf der Recycle-Linie (ohne Farbe) bleiben die Steine liegen
-            if (Color == null) richtung = Parameters.Direction.stop;
-
             foreach (LegoBrick brick in bricks)
             {
-                brick.Bewegen(richtung);
+                if (brick.Status == Parameters.BrickStatus.atRecycleLine)
+                    brick.Bewegen(Parameters.Direction.stop);
+                else
+                    brick.Bewegen(richtung);
             }
         }
     }

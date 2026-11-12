@@ -38,7 +38,8 @@ public class Parameters
         toCustomer,    // fährt auf der Delivery-Linie zum Kunden
         toRecycling,   // fährt auf der Delivery-Linie zum Recycling
         atCustomer,    // ist beim Kunden angekommen und wartet auf die Factory
-        atRecycling    // ist beim Recycling angekommen und wartet auf die Factory
+        atRecycling,    // ist beim Recycling angekommen und wartet auf die Factory
+        atRecycleLine
     }
 
     // NEU (UML): Ergebnis von Factory.Undock()

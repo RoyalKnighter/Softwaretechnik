@@ -21,9 +21,6 @@ namespace smartFactoryApp.Models
         private int toRecycleMitteX;
         private int toRecycleMitteY;
 
-        // NEU (UML): TODO Bedeutung unklar, noch ungenutzt
-        private int versatz = 0;
-
         public LegoColor Color { get; set; }
         public LegoSize Size { get; set; }
 
@@ -41,8 +38,8 @@ namespace smartFactoryApp.Models
 
             toCustomerMitteX = ViewParameters.ToCustomerLinePosition.X + ViewParameters.ToCustomerLineWidth / 2 - 6;
             toCustomerMitteY = ViewParameters.ToCustomerLinePosition.Y + ViewParameters.ToCustomerLineHeight / 2 - 6;
-            toRecycleMitteX  = ViewParameters.ToRecycleLinePosition.X + ViewParameters.ToRecycleLineWidth / 2 - 6;
-            toRecycleMitteY  = ViewParameters.ToRecycleLinePosition.Y + ViewParameters.ToRecycleLineHeight / 2 - 6;
+            toRecycleMitteX = ViewParameters.ToRecycleLinePosition.X + ViewParameters.ToRecycleLineWidth / 2 - 6;
+            toRecycleMitteY = ViewParameters.ToRecycleLinePosition.Y + ViewParameters.ToRecycleLineHeight / 2 - 6;
         }
 
         public override string ToString()
@@ -100,9 +97,12 @@ namespace smartFactoryApp.Models
                     if (X > toRecycleMitteX) base.Bewegen(Direction.left);
                     else Status = BrickStatus.atRecycling;
                     break;
+                case BrickStatus.atRecycleLine:
+                    SetzePose(pose);
+                    break;
 
-                // docked: wird nur vom Roboter bewegt
-                // atCustomer, atRecycling: wartet, bis die Factory den Stein abholt
+                    // docked: wird nur vom Roboter bewegt
+                    // atCustomer, atRecycling: wartet, bis die Factory den Stein abholt
             }
         }
     }
