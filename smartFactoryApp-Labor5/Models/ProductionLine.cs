@@ -20,7 +20,7 @@ namespace smartFactoryApp.Models
         public Point Location => new Point(x, y);
         public double Angle => angle;
         public Parameters.LegoColor Color { get; }
-        public IReadOnlyList<LegoBrick> Bricks => bricks;
+        public List<LegoBrick> Bricks => bricks;
 
         public ProductionLine(Pose pose, Parameters.LegoColor color)
         {
@@ -30,13 +30,11 @@ namespace smartFactoryApp.Models
             Color = color;
             CreateBricks();
         }
-        public ProductionLine(Point location, double angle, Parameters.LegoColor color)
-            : this(new Pose(location.X, location.Y, angle), color)
+        public ProductionLine(Pose pose)
         {
-        }
-        public ProductionLine(Point location, Parameters.LegoColor color)
-            : this(new Pose(location.X, location.Y, 0), color)
-        {
+            x = pose.X;
+            y = pose.Y;
+            angle = pose.Angle;
         }
 
         // Erzeugt die Legosteine in der Farbe der Linie. Sie liegen nebeneinander

@@ -14,9 +14,8 @@ public class Factory
     private ProductionLine productionBlue;
     private ProductionLine productionGreen;
     private ProductionLine productionYellow;
+    private ProductionLine productionRecycle;
 
-    // Steine, die auf der Recycle-Linie liegen (höchstens maxRecycleBricks)
-    private List<LegoBrick> recycleBricks = new List<LegoBrick>();
     private Random rnd = new Random();
 
     // Roboter
@@ -37,11 +36,11 @@ public class Factory
     public List<int> LegoDelivered = new List<int>();
 
     // Legosteine je Farbe
-    public List<LegoBrick> RedBricks => (List<LegoBrick>) productionRed.Bricks;
-    public List<LegoBrick> BlueBricks => (List<LegoBrick>) productionBlue.Bricks;
-    public List<LegoBrick> GreenBricks => (List<LegoBrick>) productionGreen.Bricks;
-    public List<LegoBrick> YellowBricks => (List<LegoBrick>) productionYellow.Bricks;
-    public IReadOnlyList<LegoBrick> RecycleBricks => recycleBricks;
+    public List<LegoBrick> RedBricks => productionRed.Bricks;
+    public List<LegoBrick> BlueBricks => productionBlue.Bricks;
+    public List<LegoBrick> GreenBricks => productionGreen.Bricks;
+    public List<LegoBrick> YellowBricks => productionYellow.Bricks;
+    public List<LegoBrick> RecycleBricks => productionRecycle.Bricks;
 
     public Factory()
     {
@@ -51,6 +50,7 @@ public class Factory
         productionBlue   = new ProductionLine(RectBluePose,   LegoColor.blue);
         productionGreen  = new ProductionLine(RectGreenPose,  LegoColor.green);
         productionYellow = new ProductionLine(RectYellowPose, LegoColor.yellow);
+        productionRecycle = new ProductionLine(RectYellowPose);
 
         LegoOrder.Add(0);
         LegoOrder.Add(0);
@@ -79,11 +79,13 @@ public class Factory
         productionBlue.Bewegen();
         productionGreen.Bewegen();
         productionYellow.Bewegen();
+        productionRecycle.Bewegen();
 
         AngekommeneSteineAbholen(productionRed);
         AngekommeneSteineAbholen(productionBlue);
         AngekommeneSteineAbholen(productionGreen);
         AngekommeneSteineAbholen(productionYellow);
+        AngekommeneSteineAbholen(productionRecycle);
     }
 
     public void Undock()
@@ -91,11 +93,7 @@ public class Factory
         LegoBrick? brick = Beweger.Undock();
         if (brick == null) return;
 
-        // Mit 50 % Wahrscheinlichkeit zum Recycling, aber nur, wenn auf der
-        // Recycle-Linie noch Platz ist (Steine, die gerade unterwegs sind, zählen mit)
-        int unterwegs = RedBricks.Concat(BlueBricks).Concat(GreenBricks).Concat(YellowBricks)
-                                 .Count(b => b.Ausgeliefert && !b.ZumKunden);
-        bool platzFrei = recycleBricks.Count + unterwegs < maxRecycleBricks;
+        bool platzFrei = RecycleBricks.Count < 4;
 
         brick.ZumKunden = !platzFrei || rnd.Next(2) == 0;
 
@@ -124,7 +122,7 @@ public class Factory
     // Legt den Stein auf den nächsten freien Platz der Recycle-Linie
     private void AufRecycleLinieLegen(LegoBrick brick)
     {
-        int platz = recycleBricks.Count;
+        int platz = RecycleBricks.Count;
         double w = ProductionLineWidth;
         double h = ProductionLineHeight;
 
@@ -142,7 +140,7 @@ public class Factory
         brick.Ausgeliefert = false;
         brick.AmZiel = false;
 
-        recycleBricks.Add(brick);
+        RecycleBricks.Add(brick);
     }
 
     public void Order()
