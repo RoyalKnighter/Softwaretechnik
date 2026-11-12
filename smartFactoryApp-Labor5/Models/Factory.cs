@@ -9,6 +9,10 @@ namespace smartFactoryApp.ViewModels;
 
 public class Factory
 {
+    
+    ProductionLineType orderFromLine;
+    LegoColor orderBrickColor;
+    
     private Robot robot;
     private ProductionLine productionRed;
     private ProductionLine productionBlue;
@@ -57,17 +61,17 @@ public class Factory
     {
         robot = new Robot(RobotPose.Location, Borders);
 
-        productionRed     = new ProductionLine(RectRedPose);
-        productionBlue    = new ProductionLine(RectBluePose);
-        productionGreen   = new ProductionLine(RectGreenPose);
-        productionYellow  = new ProductionLine(RectYellowPose);
-        productionRecycle = new ProductionLine(RectRecyclePose);
+        productionRed = new ProductionLine(RectRedPose, ProductionLineType.productionLineRed);
+        productionBlue = new ProductionLine(RectBluePose, ProductionLineType.productionLineBlue);
+        productionGreen = new ProductionLine(RectGreenPose, ProductionLineType.productionLineGreen);
+        productionYellow = new ProductionLine(RectYellowPose, ProductionLineType.productionLineYellow);
+        productionRecycle = new ProductionLine(RectRecyclePose, ProductionLineType.productionLineRecycle);
 
         LegoOrder.Add(0);
         LegoOrder.Add(0);
         LegoOrder.Add(0);
         LegoOrder.Add(0);
-        
+
         LegoDelivered.Add(0);
         LegoDelivered.Add(0);
         LegoDelivered.Add(0);
@@ -217,4 +221,20 @@ public class Factory
         productionGreen.CreateBricks();
         productionYellow.CreateBricks();
     }
+
+    public void GoToDelivery()
+    {
+        robot.GoToDelivery();
+        Beweger.DockobjektNachziehen(robot.Greifpunkt(), robot.Angle);
+    }
+
+    public void Order()
+    {
+        Random rnd = new Random();
+
+        for (int i = 0; i < 8; i++)
+            LegoOrder[rnd.Next(4)]++;
+    }
+
+    
 }

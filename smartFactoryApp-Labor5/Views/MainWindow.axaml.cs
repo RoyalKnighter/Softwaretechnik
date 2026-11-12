@@ -36,6 +36,7 @@ public partial class MainWindow : Window
 
     private void SetUPProductionLinesButton_Click(object sender, RoutedEventArgs e)
     {
+        OrderButton.IsEnabled = true;
         SetUPProductionLinesButton.IsEnabled = false;
         ViewModel?.SetUPProductionLines();
     }

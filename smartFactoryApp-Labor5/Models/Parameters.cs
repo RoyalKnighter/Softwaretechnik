@@ -51,6 +51,15 @@ public class Parameters
         toRecycling          // Stein fährt zum Recycling
     }
 
+    public enum ProductionLineType
+    {
+        productionLineRed,
+        productionLineBlue,
+        productionLineGreen,
+        productionLineYellow,
+        productionLineRecycle
+    }
+
     public const int bricksPerLine = 4;   // gilt auch für die Plätze auf der Recycle-Linie
     public const double rotationStep = 10;
     public const int timerInterval = 50; // Timer-Intervall in Millisekunden

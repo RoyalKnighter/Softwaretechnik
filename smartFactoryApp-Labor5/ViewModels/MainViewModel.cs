@@ -26,7 +26,7 @@ public partial class MainViewModel : ViewModelBase
     public int greenDelivered => factory.LegoDelivered[2];
     public int yellowDelivered => factory.LegoDelivered[3];
 
-    [ObservableProperty] private string orderInfo = "";
+    [ObservableProperty] private string orderInfo = "Test";
 
     // NEU (UML): Text zum Ergebnis des letzten Undock
     [ObservableProperty] private string undockInfo = "";
@@ -288,6 +288,14 @@ public partial class MainViewModel : ViewModelBase
         if (Beweger.Dockobjekt != null) NotifyLegoBricksPositionChanged();
     }
 
+    private void NotifyOrderChanged()
+    {
+        OnPropertyChanged(nameof(redOrder));
+        OnPropertyChanged(nameof(blueOrder));
+        OnPropertyChanged(nameof(greenOrder));
+        OnPropertyChanged(nameof(yellowOrder));
+    }
+
     private void NotifyLegoBricksPositionChanged()
     {
         // Auf der Recycle-Linie kommen Steine dazu oder fallen weg,
@@ -311,7 +319,8 @@ public partial class MainViewModel : ViewModelBase
 
     public void Order()
     {
-        throw new NotImplementedException();
+        factory.Order();
+        NotifyOrderChanged();
     }
 
     public void SetUPProductionLines()
@@ -327,6 +336,7 @@ public partial class MainViewModel : ViewModelBase
 
     public void GoToDelivery()
     {
-        throw new NotImplementedException();
+        factory.GoToDelivery();
+        NotifyRobotPositionChanged();
     }
 }

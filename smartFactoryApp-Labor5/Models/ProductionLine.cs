@@ -12,6 +12,7 @@ namespace smartFactoryApp.Models
 
         // Die Legosteine, die auf dieser Produktionslinie liegen
         private List<LegoBrick> bricks = new List<LegoBrick>();
+        Parameters.ProductionLineType productionLineType;
 
         // Zähler für die Timer-Takte: die ersten 10 Takte hin, die nächsten 10 zurück
         private int tickCount = 0;
@@ -22,14 +23,14 @@ namespace smartFactoryApp.Models
         // null bei einer Linie ohne eigene Farbe (Recycle-Linie)
         public List<LegoBrick> Bricks => bricks;
 
-        public ProductionLine(Pose pose)
+        public ProductionLine(Pose pose, Parameters.ProductionLineType productionLineType)
         {
             x = pose.X;
             y = pose.Y;
             angle = pose.Angle;
         }
-        public ProductionLine(Point location, double angle)
-            : this(new Pose(location.X, location.Y, angle))
+        public ProductionLine(Point location, double angle, Parameters.ProductionLineType productionLineType)
+            : this(new Pose(location.X, location.Y, angle), productionLineType)
         {
         }
 

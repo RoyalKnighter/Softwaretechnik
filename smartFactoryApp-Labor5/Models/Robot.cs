@@ -86,4 +86,11 @@ public class Robot : Beweger
             }
         }
     }
+
+    public void GoToDelivery()
+    {
+        Angle = 0;
+        X = 260;
+        Y = 120;
+    }
 }
