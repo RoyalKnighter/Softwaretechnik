@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 using static smartFactoryApp.Models.Parameters;
 
 namespace smartFactoryApp.Models;
@@ -86,12 +85,5 @@ public class Robot : Beweger
                 Y = y;
             }
         }
-    }
-
-    public void GoToDelivery()
-    {
-        Angle = 0;
-        X = 260;
-        Y = 120;
     }
 }

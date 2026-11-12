@@ -15,15 +15,23 @@ public partial class MainViewModel : ViewModelBase
     private Factory factory;
     private DispatcherTimer timer;
 
-    public int redOrder => factory.LegoOrder[0];
-    public int blueOrder => factory.LegoOrder[1];
-    public int greenOrder => factory.LegoOrder[2];
-    public int yellowOrder => factory.LegoOrder[3];
+    // Im UML Felder; [ObservableProperty] erzeugt daraus die Eigenschaften RedOrder, RedDelivered usw.
+    [ObservableProperty] private int redOrder;
+    [ObservableProperty] private int blueOrder;
+    [ObservableProperty] private int greenOrder;
+    [ObservableProperty] private int yellowOrder;
 
-    public int redDelivered => factory.LegoDelivered[0];
-    public int blueDelivered => factory.LegoDelivered[1];
-    public int greenDelivered => factory.LegoDelivered[2];
-    public int yellowDelivered => factory.LegoDelivered[3];
+    [ObservableProperty] private int redDelivered;
+    [ObservableProperty] private int blueDelivered;
+    [ObservableProperty] private int greenDelivered;
+    [ObservableProperty] private int yellowDelivered;
+
+    [ObservableProperty] private string orderInfo = "";
+
+    // NEU (UML): Text zum Ergebnis des letzten Undock
+    [ObservableProperty] private string undockInfo = "";
+
+    public int Order { get; set; }
 
     // Roboter
     public double RobotX => factory.RobotX;
@@ -57,13 +65,28 @@ public partial class MainViewModel : ViewModelBase
     public double ProductionRecycleY => ViewParameters.RectRecyclePose.Y;
     public double ProductionRecycleAngle => ViewParameters.RectRecyclePose.Angle;
 
+    // NEU (UML): Größe einer Produktionslinie
+    public double ProductionLineWidth => ViewParameters.ProductionLineWidth;
+    public double ProductionLineHeight => ViewParameters.ProductionLineHeight;
+
+    // NEU (UML): Pfeile zum Kunden und zum Recycling
+    public double ToCustomerX => ViewParameters.ToCustomerLinePosition.X;
+    public double ToCustomerY => ViewParameters.ToCustomerLinePosition.Y;
+    public double ToCustomerWidth => ViewParameters.ToCustomerLineWidth;
+    public double ToCustomerHeight => ViewParameters.ToCustomerLineHeight;
+
+    public double ToRecycleX => ViewParameters.ToRecycleLinePosition.X;
+    public double ToRecycleY => ViewParameters.ToRecycleLinePosition.Y;
+    public double ToRecycleWidth => ViewParameters.ToRecycleLineWidth;
+    public double ToRecycleHeight => ViewParameters.ToRecycleLineHeight;
+
     // Legosteine je Farbe, aufbereitet für die Anzeige
     public List<LegoBrickViewModel> RedBricks { get; }
     public List<LegoBrickViewModel> BlueBricks { get; }
     public List<LegoBrickViewModel> GreenBricks { get; }
     public List<LegoBrickViewModel> YellowBricks { get; }
 
-    // Feste Plätze auf der Recycle-Linie; ein leerer Platz ist unsichtbar
+    // ABWEICHUNG vom UML: feste Plätze auf der Recycle-Linie; ein leerer Platz ist unsichtbar
     public List<LegoBrickViewModel> RecycleBricks { get; } = new List<LegoBrickViewModel>();
 
     public MainViewModel()
@@ -75,8 +98,13 @@ public partial class MainViewModel : ViewModelBase
         GreenBricks = factory.GreenBricks.Select(b => new LegoBrickViewModel(b)).ToList();
         YellowBricks = factory.YellowBricks.Select(b => new LegoBrickViewModel(b)).ToList();
 
-        for (int i = 0; i < maxRecycleBricks; i++)
+        for (int i = 0; i < bricksPerLine; i++)
             RecycleBricks.Add(new LegoBrickViewModel(null));
+
+        RedOrder = factory.LegoOrder[0];
+        BlueOrder = factory.LegoOrder[1];
+        GreenOrder = factory.LegoOrder[2];
+        YellowOrder = factory.LegoOrder[3];
 
         timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
@@ -113,10 +141,9 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.up;
         }
     }
-    public void MoveDown()
-    {
+    public void MoveDown() {
         if (IsStepMode)
-        {
+            {
             factory.RobotBewegen(Direction.down);
             NotifyRobotPositionChanged();
         }
@@ -125,8 +152,7 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.down;
         }
     }
-    public void MoveLeft()
-    {
+    public void MoveLeft() {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.left);
@@ -137,8 +163,7 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.left;
         }
     }
-    public void MoveRight()
-    {
+    public void MoveRight() {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.right);
@@ -149,8 +174,7 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.right;
         }
     }
-    public void MoveUpLeft()
-    {
+    public void MoveUpLeft() {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.upLeft);
@@ -161,8 +185,7 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.upLeft;
         }
     }
-    public void MoveUpRight()
-    {
+    public void MoveUpRight() {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.upRight);
@@ -173,8 +196,7 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.upRight;
         }
     }
-    public void MoveDownLeft()
-    {
+    public void MoveDownLeft() {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.downLeft);
@@ -185,8 +207,7 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.downLeft;
         }
     }
-    public void MoveDownRight()
-    {
+    public void MoveDownRight() {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.downRight);
@@ -199,8 +220,7 @@ public partial class MainViewModel : ViewModelBase
     }
 
     // Roboter drehen
-    public void MoveRotateLeft()
-    {
+    public void MoveRotateLeft() {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.turnLeft);
@@ -211,8 +231,7 @@ public partial class MainViewModel : ViewModelBase
             factory.RobotDirection = Direction.turnLeft;
         }
     }
-    public void MoveRotateRight()
-    {
+    public void MoveRotateRight() {
         if (IsStepMode)
         {
             factory.RobotBewegen(Direction.turnRight);
@@ -226,7 +245,14 @@ public partial class MainViewModel : ViewModelBase
 
     public void Undock()
     {
-        factory.Undock();
+        UndockInfo = factory.Undock() switch
+        {
+            UndockResult.notDocked         => "Kein Stein gegriffen",
+            UndockResult.notOnDeliveryLine => "Nicht über der Delivery-Linie",
+            UndockResult.toCustomer        => "Stein fährt zum Kunden",
+            UndockResult.toRecycling       => "Stein fährt zum Recycling",
+            _                              => ""
+        };
         NotifyRobotPositionChanged();
         NotifyLegoBricksPositionChanged();   // abgelegten Stein auf der Linie anzeigen
     }
@@ -251,34 +277,18 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(RobotY));
         OnPropertyChanged(nameof(RobotAngle));
 
-        if (Beweger.dockObjekt != null) NotifyLegoBricksPositionChanged();
+        if (Beweger.Dockobjekt != null) NotifyLegoBricksPositionChanged();
     }
 
     private void NotifyLegoBricksPositionChanged()
     {
-        // Die Produktionslinien können einen Stein durch einen neuen ersetzt haben,
+        // Auf der Recycle-Linie kommen Steine dazu oder fallen weg,
         // deshalb vor dem Aktualisieren den aktuellen Stein aus der Factory übernehmen
-        Abgleichen(RedBricks, factory.RedBricks);
-        Abgleichen(BlueBricks, factory.BlueBricks);
-        Abgleichen(GreenBricks, factory.GreenBricks);
+        Abgleichen(RedBricks,    factory.RedBricks);
+        Abgleichen(BlueBricks,   factory.BlueBricks);
+        Abgleichen(GreenBricks,  factory.GreenBricks);
         Abgleichen(YellowBricks, factory.YellowBricks);
         Abgleichen(RecycleBricks, factory.RecycleBricks);
-    }
-
-    private void NotifyOrderChanged()
-    {
-        OnPropertyChanged(nameof(redOrder));
-        OnPropertyChanged(nameof(blueOrder));
-        OnPropertyChanged(nameof(greenOrder));
-        OnPropertyChanged(nameof(yellowOrder));
-    }
-
-    private void NotifyDeliveryChanged()
-    {
-        OnPropertyChanged(nameof(redDelivered));
-        OnPropertyChanged(nameof(blueDelivered));
-        OnPropertyChanged(nameof(greenDelivered));
-        OnPropertyChanged(nameof(yellowDelivered));
     }
 
     // Weist jedem ViewModel den Stein an derselben Stelle zu (oder null, wenn es keinen gibt)
@@ -289,28 +299,5 @@ public partial class MainViewModel : ViewModelBase
             viewModels[i].Brick = i < bricks.Count ? bricks[i] : null;
             viewModels[i].Refresh();
         }
-    }
-
-    public void SetUPProductionLines()
-    {
-        factory.SetUPProductionLines();
-        NotifyLegoBricksPositionChanged();
-    }
-
-    public void GoToPickUP()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void GoToDelivery()
-    {
-        factory.GoToDelivery();
-        NotifyRobotPositionChanged();
-    }
-
-    public void Order()
-    {
-        factory.Order();
-        NotifyOrderChanged();
     }
 }

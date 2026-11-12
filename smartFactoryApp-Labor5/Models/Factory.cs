@@ -14,9 +14,17 @@ public class Factory
     private ProductionLine productionBlue;
     private ProductionLine productionGreen;
     private ProductionLine productionYellow;
+
+    // ABWEICHUNG vom UML: Die Recycle-Linie ist eine eigene ProductionLine (ohne Farbe, ohne Bewegung).
+    // Im Diagramm gibt es dieses Feld nicht.
     private ProductionLine productionRecycle;
 
-    private Random rnd = new Random();
+    // NEU (UML): Typ im Diagramm nicht sichtbar (kommt vermutlich mit der Klasse Logistics in Labor 5).
+    // TODO: noch ungenutzt
+    private object? logistics = null;
+
+    // NEU (UML): Ergebnis der letzten Zufallsentscheidung beim Undock (true = zum Recycling)
+    private bool naechsterZumRecycling = false;
 
     // Roboter
     public double RobotX => robot.X;
@@ -32,45 +40,48 @@ public class Factory
         set => robot.Angle = value;
     }
 
-    public List<int> LegoOrder = new List<int>();
-    public List<int> LegoDelivered = new List<int>();
+    // Im UML eine Eigenschaft (vorher ein öffentliches Feld)
+    public List<int> LegoOrder { get; } = new List<int>();
 
     // Legosteine je Farbe
     public List<LegoBrick> RedBricks => productionRed.Bricks;
     public List<LegoBrick> BlueBricks => productionBlue.Bricks;
     public List<LegoBrick> GreenBricks => productionGreen.Bricks;
     public List<LegoBrick> YellowBricks => productionYellow.Bricks;
+
+    // ABWEICHUNG vom UML: Steine auf der Recycle-Linie
     public List<LegoBrick> RecycleBricks => productionRecycle.Bricks;
 
     public Factory()
     {
         robot = new Robot(RobotPose.Location, Borders);
 
-        productionRed    = new ProductionLine(RectRedPose);
-        productionBlue   = new ProductionLine(RectBluePose);
-        productionGreen  = new ProductionLine(RectGreenPose);
-        productionYellow = new ProductionLine(RectYellowPose);
+        productionRed     = new ProductionLine(RectRedPose,    LegoColor.red);
+        productionBlue    = new ProductionLine(RectBluePose,   LegoColor.blue);
+        productionGreen   = new ProductionLine(RectGreenPose,  LegoColor.green);
+        productionYellow  = new ProductionLine(RectYellowPose, LegoColor.yellow);
         productionRecycle = new ProductionLine(RectRecyclePose);
 
         LegoOrder.Add(0);
         LegoOrder.Add(0);
         LegoOrder.Add(0);
         LegoOrder.Add(0);
-        
-        LegoDelivered.Add(0);
-        LegoDelivered.Add(0);
-        LegoDelivered.Add(0);
-        LegoDelivered.Add(0);
+    }
+
+    // NEU (UML): alle Steine auf allen Linien, inklusive Recycle-Linie
+    private List<LegoBrick> AlleBricks()
+    {
+        return RedBricks.Concat(BlueBricks).Concat(GreenBricks).Concat(YellowBricks)
+                        .Concat(RecycleBricks).ToList();
     }
 
     public void RobotBewegen(Direction dir)
     {
         robot.Bewegen(dir);
-        
-        if (Beweger.dockObjekt == null) robot.Kontakt(RedBricks.Concat(BlueBricks).Concat(GreenBricks).Concat(YellowBricks).Concat(RecycleBricks).ToList());
 
-        Beweger.DockobjektNachziehen(robot.GreifPunkt(), robot.Angle);
+        if (Beweger.Dockobjekt == null) robot.Kontakt(AlleBricks());
 
+        Beweger.DockobjektNachziehen(robot.Greifpunkt(), robot.Angle);
     }
 
     public void LegoBricksBewegen()
@@ -81,76 +92,114 @@ public class Factory
         productionYellow.Bewegen();
         productionRecycle.Bewegen();
 
-        AngekommeneSteineAbholen(productionRed);
-        AngekommeneSteineAbholen(productionBlue);
-        AngekommeneSteineAbholen(productionGreen);
-        AngekommeneSteineAbholen(productionYellow);
-        AngekommeneSteineAbholen(productionRecycle);
+        // Angekommene Steine abholen
+        foreach (LegoBrick brick in AlleBricks())
+        {
+            bool vonRecycleLinie = RecycleBricks.Contains(brick);
+
+            if (brick.Status == BrickStatus.atCustomer)
+            {
+                if (vonRecycleLinie)
+                {
+                    // Nur Steine von der Recycle-Linie werden gelöscht
+                    RecycleBricks.Remove(brick);
+                }
+                else
+                {
+                    // Stein zurück auf seine Produktionslinie
+                    brick.RecyclePlatz = -1;
+                    brick.Status = BrickStatus.onLine;
+                    brick.Bewegen(Direction.stop);   // legt ihn sofort auf seinen Platz
+                }
+            }
+            else if (brick.Status == BrickStatus.atRecycling)
+            {
+                if (!vonRecycleLinie)
+                {
+                    // Neuer Stein in derselben Farbe auf den reservierten Platz der Recycle-Linie
+                    var neu = new LegoBrick(RecyclePlatzPose(brick.RecyclePlatz), brick.Color, brick.Size);
+                    neu.RecyclePlatz = brick.RecyclePlatz;
+                    RecycleBricks.Add(neu);
+
+                    brick.RecyclePlatz = -1;
+                }
+
+                // Der Stein selbst geht zurück auf seine Produktionslinie
+                brick.Status = BrickStatus.onLine;
+                brick.Bewegen(Direction.stop);
+            }
+        }
     }
 
-    public void Undock()
+    // NEU (UML): erster freier Platz auf der Recycle-Linie, oder -1 wenn alle belegt sind.
+    // Plätze von Steinen, die gerade zum Recycling unterwegs sind, zählen als belegt.
+    private int FreierRecyclePlatz()
     {
-        LegoBrick? brick = Beweger.Undock();
-        if (brick == null) return;
+        var belegt = AlleBricks()
+            .Where(b => RecycleBricks.Contains(b) ||
+                        b.Status == BrickStatus.toRecycling || b.Status == BrickStatus.atRecycling)
+            .Select(b => b.RecyclePlatz)
+            .ToHashSet();
 
-        // Mit 50 % Wahrscheinlichkeit zum Recycling, aber nur, wenn auf der
-        // Recycle-Linie noch Platz ist. Steine, die gerade zum Recycling unterwegs sind, zählen mit.
-        int unterwegs = RedBricks.Concat(BlueBricks).Concat(GreenBricks).Concat(YellowBricks)
-                                 .Count(b => b.Ausgeliefert && !b.ZumKunden);
-        int belegt = RecycleBricks.Count + unterwegs;
+        for (int platz = 0; platz < bricksPerLine; platz++)
+        {
+            if (!belegt.Contains(platz)) return platz;
+        }
+        return -1;
+    }
 
-        // Kommt der Stein selbst von der Recycle-Linie, wird sein Platz dort gleich frei
-        if (RecycleBricks.Contains(brick)) belegt--;
+    // NEU (UML): Position eines Platzes auf der Recycle-Linie.
+    // Die Linie wird in gleich große Plätze aufgeteilt. Der Stein liegt in der Mitte seines Platzes,
+    // aber seitlich neben der Linie (wie bei den Produktionslinien), damit der Roboter ihn greifen kann.
+    private Pose RecyclePlatzPose(int platz)
+    {
+        const double brickSize = 12;
+        double w = ProductionLineWidth;
+        double h = ProductionLineHeight;
 
-        bool platzFrei = belegt < maxRecycleBricks;
+        // Mitte der Linie, Richtung entlang der Linie (u) und quer dazu (n)
+        double mitteX = RectRecyclePose.X + w / 2;
+        double mitteY = RectRecyclePose.Y + h / 2;
+        double rad = RectRecyclePose.Angle * Math.PI / 180;
+        double ux = Math.Cos(rad), uy = Math.Sin(rad);
+        double nx = -uy, ny = ux;
 
-        brick.ZumKunden = !platzFrei || rnd.Next(2) == 0;
+        double t = -w / 2 + (platz + 0.5) * w / bricksPerLine;   // Position entlang der Linie
+        double seitlich = h / 2 + brickSize / 2 + 3;             // Abstand von der Mitte der Linie
+
+        return new Pose((int)Math.Round(mitteX + ux * t + nx * seitlich - brickSize / 2),
+                        (int)Math.Round(mitteY + uy * t + ny * seitlich - brickSize / 2),
+                        RectRecyclePose.Angle);
+    }
+
+    public UndockResult Undock()
+    {
+        if (Beweger.Dockobjekt is not LegoBrick brick) return UndockResult.notDocked;
+        if (!Beweger.Undock()) return UndockResult.notOnDeliveryLine;
+
+        // Steine von der Recycle-Linie gehen immer zum Kunden und werden dort gelöscht.
+        // Alle anderen gehen mit 50 % Wahrscheinlichkeit zum Recycling, wenn dort ein Platz frei ist.
+        bool vonRecycleLinie = RecycleBricks.Contains(brick);
+        int platz = vonRecycleLinie ? -1 : FreierRecyclePlatz();
+
+        naechsterZumRecycling = platz >= 0 && Random.Shared.Next(2) == 0;
+
+        UndockResult ergebnis;
+        if (naechsterZumRecycling)
+        {
+            brick.ZumRecycling(platz, RecyclePlatzPose(platz));
+            ergebnis = UndockResult.toRecycling;
+        }
+        else
+        {
+            brick.ZumKunden();
+            ergebnis = UndockResult.toCustomer;
+        }
 
         // Den Roboter nach dem Undocken etwas zurückfahren, weg vom abgelegten Stein
         for (int i = 0; i < 4; i++)
             robot.Bewegen(Direction.down);
-    }
 
-    // Steine, die am Ende der Delivery-Linie angekommen sind, werden abgeholt:
-    // Zum Kunden -> verschwindet, zum Recycling -> kommt auf die Recycle-Linie.
-    // Kommt der Stein von einer farbigen Linie, bekommt sie einen neuen Stein.
-    // Kommt er von der Recycle-Linie, wird er dort nur entfernt.
-    private void AngekommeneSteineAbholen(ProductionLine linie)
-    {
-        // Rückwärts, weil Steine aus der Liste entfernt werden können
-        for (int i = linie.Bricks.Count - 1; i >= 0; i--)
-        {
-            LegoBrick brick = linie.Bricks[i];
-            if (!brick.AmZiel) continue;
-
-            if (linie == productionRecycle)
-                linie.Bricks.RemoveAt(i);
-            else
-                brick.Location = brick.Heimat;
-                //linie.NeuerStein(i);     // muss vor SteinAblegen kommen, weil es die alte Heimat braucht
-
-            if (!brick.ZumKunden)
-                productionRecycle.SteinAblegen(brick);
-        }
-    }
-
-    public void Order()
-    {
-        for (int i = 0; i < 8; i++)
-            LegoOrder[rnd.Next(4)]++;
-    }
-
-    public void GoToDelivery()
-    {
-        robot.GoToDelivery();
-        Beweger.DockobjektNachziehen(robot.GreifPunkt(), robot.Angle);
-    }
-
-    public void SetUPProductionLines()
-    {
-        productionRed.CreateBricks();
-        productionBlue.CreateBricks();
-        productionGreen.CreateBricks();
-        productionYellow.CreateBricks();
+        return ergebnis;
     }
 }

@@ -124,8 +124,7 @@ public class Factory
                     brick.RecyclePlatz = -1;
                 }
 
-                // Der Stein selbst geht zurück: auf seine Produktionslinie
-                // bzw. (Recycle-Stein) auf seinen alten Platz auf der Recycle-Linie
+                // Der Stein selbst geht zurück auf seine Produktionslinie
                 brick.Status = BrickStatus.onLine;
                 brick.Bewegen(Direction.stop);
             }
@@ -150,20 +149,26 @@ public class Factory
     }
 
     // NEU (UML): Position eines Platzes auf der Recycle-Linie.
-    // Die Linie wird in gleich große Plätze aufgeteilt, der Stein kommt in die Mitte seines Platzes.
+    // Die Linie wird in gleich große Plätze aufgeteilt. Der Stein liegt in der Mitte seines Platzes,
+    // aber seitlich neben der Linie (wie bei den Produktionslinien), damit der Roboter ihn greifen kann.
     private Pose RecyclePlatzPose(int platz)
     {
+        const double brickSize = 12;
         double w = ProductionLineWidth;
         double h = ProductionLineHeight;
 
+        // Mitte der Linie, Richtung entlang der Linie (u) und quer dazu (n)
         double mitteX = RectRecyclePose.X + w / 2;
         double mitteY = RectRecyclePose.Y + h / 2;
         double rad = RectRecyclePose.Angle * Math.PI / 180;
+        double ux = Math.Cos(rad), uy = Math.Sin(rad);
+        double nx = -uy, ny = ux;
 
-        double t = -w / 2 + (platz + 0.5) * w / bricksPerLine;
+        double t = -w / 2 + (platz + 0.5) * w / bricksPerLine;   // Position entlang der Linie
+        double seitlich = h / 2 + brickSize / 2 + 3;             // Abstand von der Mitte der Linie
 
-        return new Pose((int)Math.Round(mitteX + Math.Cos(rad) * t - 6),
-                        (int)Math.Round(mitteY + Math.Sin(rad) * t - 6),
+        return new Pose((int)Math.Round(mitteX + ux * t + nx * seitlich - brickSize / 2),
+                        (int)Math.Round(mitteY + uy * t + ny * seitlich - brickSize / 2),
                         RectRecyclePose.Angle);
     }
 
@@ -172,11 +177,11 @@ public class Factory
         if (Beweger.Dockobjekt is not LegoBrick brick) return UndockResult.notDocked;
         if (!Beweger.Undock()) return UndockResult.notOnDeliveryLine;
 
-        // Ein Stein von der Recycle-Linie behält seinen Platz, alle anderen brauchen einen freien
+        // Steine von der Recycle-Linie gehen immer zum Kunden und werden dort gelöscht.
+        // Alle anderen gehen mit 50 % Wahrscheinlichkeit zum Recycling, wenn dort ein Platz frei ist.
         bool vonRecycleLinie = RecycleBricks.Contains(brick);
-        int platz = vonRecycleLinie ? brick.RecyclePlatz : FreierRecyclePlatz();
+        int platz = vonRecycleLinie ? -1 : FreierRecyclePlatz();
 
-        // Mit 50 % Wahrscheinlichkeit zum Recycling, aber nur, wenn es dort einen Platz gibt
         naechsterZumRecycling = platz >= 0 && Random.Shared.Next(2) == 0;
 
         UndockResult ergebnis;
