@@ -90,7 +90,7 @@
                                     Click="trainButton_Click"/>
                         </Grid>
                         <Button x:Name="loadWeightsButton" Content="Load Weight Matrices"
-                                />
+                                Click="loadWeightButton_Click"/>
                     </StackPanel>
                 </Border>
 
@@ -122,7 +122,7 @@
                                 <Grid>
                                     <TextBlock Text="no image" FontStyle="Italic" Foreground="Gray"
                                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    <Image x:Name="digitImage" Stretch="Uniform"/>
+                                    <Image x:Name="digitImage" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="None"/>
                                 </Grid>
                             </Border>
                             <StackPanel Grid.Column="1" Margin="12,0,0,0" Spacing="8">
