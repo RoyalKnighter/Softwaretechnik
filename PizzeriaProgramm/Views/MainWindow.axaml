@@ -1,0 +1,42 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PizzeriaProgramm.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="PizzeriaProgramm.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="PizzeriaProgramm">
+
+    <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="0,0,0,12">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Pizzeria" />
+                <ComboBox x:Name="PizzeriaAuswahl" Width="160" SelectedIndex="0">
+                    <ComboBoxItem Content="Köln" />
+                    <ComboBoxItem Content="Berlin" />
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Spacing="4">
+                <TextBlock Text="Pizza" />
+                <ComboBox x:Name="PizzaAuswahl" Width="160" SelectedIndex="0">
+                    <ComboBoxItem Content="Salami" />
+                    <ComboBoxItem Content="Spinat" />
+                    <ComboBoxItem Content="Schinken" />
+                    <ComboBoxItem Content="Thunfisch" />
+                    <ComboBoxItem Content="Krabben" />
+                </ComboBox>
+            </StackPanel>
+            <Button Content="Bestellen" VerticalAlignment="Bottom" Click="Bestellen_Click" />
+            <Button Content="Leeren" VerticalAlignment="Bottom" Click="Leeren_Click" />
+        </StackPanel>
+
+        <TextBox x:Name="Ausgabe"
+                 IsReadOnly="True"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 FontFamily="Consolas, Menlo, monospace" />
+    </DockPanel>
+
+</Window>
